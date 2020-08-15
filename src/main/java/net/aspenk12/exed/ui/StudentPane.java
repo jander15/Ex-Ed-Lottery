@@ -1,11 +1,6 @@
 package net.aspenk12.exed.ui;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 
 import java.io.File;
 
@@ -13,7 +8,7 @@ import java.io.File;
  * First part of the main window for entering student data
  */
 public class StudentPane extends MainPane {
-    private File studentCSV;
+    private File studentFile;
     private Button validateButton;
 
     public StudentPane() {
@@ -30,12 +25,7 @@ public class StudentPane extends MainPane {
     }
 
     private void uploadStudentCSV(){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-        );
-
-        studentCSV = fileChooser.showOpenDialog(MainWindow.getStage());
+        studentFile = openFileChooser();
         validateButton.setDisable(false);
     }
 }

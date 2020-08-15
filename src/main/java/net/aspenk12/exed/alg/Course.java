@@ -8,8 +8,8 @@ import java.util.HashMap;
 import static net.aspenk12.exed.alg.Student.*;
 
 /**
- * Instances of course are static and created all at once.
- * Course acts much like a dynamic enum, where every instance is statically defined with it's properties
+ * Instances of course are static and created all at once upon createCourses().
+ * Course acts much like a dynamic enum, where every instance exists in a static context with its properties attached
  */
 public class Course {
     private static HashMap<String, Course> courses;
@@ -97,5 +97,12 @@ public class Course {
         Integer[] retVal = new Integer[spotCounts.size()];
         spotCounts.toArray(retVal);
         return retVal;
+    }
+
+    /**
+     * @return the number of existing courses (instances of course)
+     */
+    public static int courseCount(){
+        return courses.size();
     }
 }

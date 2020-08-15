@@ -19,9 +19,9 @@ public class MainWindow {
         mainStage.setResizable(false);
 
         HBox hLayout = new HBox();
-        hLayout.getChildren().add(new StudentPane());
+        hLayout.getChildren().add(new CoursePane());
         hLayout.getChildren().add(new Separator(Orientation.VERTICAL));
-
+        hLayout.getChildren().add(new StudentPane());
 
         Scene scene = new Scene(hLayout);
         mainStage.setScene(scene);
