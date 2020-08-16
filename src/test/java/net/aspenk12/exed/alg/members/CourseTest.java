@@ -1,11 +1,12 @@
-package net.aspenk12.exed.alg;
+package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.containers.Gender;
+import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.alg.members.Course;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static net.aspenk12.exed.alg.Course.*;
-import static net.aspenk12.exed.alg.Student.Grade;
-import static net.aspenk12.exed.alg.Student.Gender;
+import static net.aspenk12.exed.alg.members.Course.*;
 
 
 public class CourseTest {

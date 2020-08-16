@@ -10,8 +10,10 @@ import java.util.List;
 
 public class CSV {
     private List<String[]> values = new ArrayList<>();
+    private File file;
 
     public CSV(File file) {
+        this.file = file;
         try {
             FileReader fileReader = new FileReader(file);
             CSVReader csvReader = new CSVReader(fileReader);
@@ -19,6 +21,10 @@ public class CSV {
         } catch (IOException | CsvException e){
             ErrorAlert.throwErrorWindow("CSV Parsing Failed", e.getClass().getName() + ": " + e.getMessage());
         }
+    }
+
+    /*protected for exception*/ File getFile(){
+        return file;
     }
 
     public String get(int row, int col){

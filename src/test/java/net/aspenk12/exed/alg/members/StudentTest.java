@@ -1,5 +1,6 @@
-package net.aspenk12.exed.alg;
+package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.members.Student;
 import net.aspenk12.exed.util.BadEmailException;
 import org.junit.Test;
 

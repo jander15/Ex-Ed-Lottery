@@ -3,7 +3,7 @@ package net.aspenk12.exed.ui;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import net.aspenk12.exed.alg.Course;
+import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.util.CSV;
 
 import java.io.File;

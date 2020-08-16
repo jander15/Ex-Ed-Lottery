@@ -1,11 +1,12 @@
-package net.aspenk12.exed.alg;
+package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.containers.Gender;
+import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.util.CSV;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import static net.aspenk12.exed.alg.Student.*;
 
 /**
  * Instances of course are static and created all at once upon createCourses().
@@ -24,6 +25,8 @@ public class Course {
         this.courseId = courseId;
         this.teachers = teachers;
         this.spotMap = spotMap;
+
+        courses.put(courseId, this);
     }
 
     public static void createCourses(CSV csv){
@@ -53,9 +56,8 @@ public class Course {
             spotMap.put(Grade.FRESHMAN, Gender.MALE, spots[6]);
             spotMap.put(Grade.FRESHMAN, Gender.FEMALE, spots[7]);
 
-            Course course = new Course(courseName, courseId, teachers, spotMap);
+            new Course(courseName, courseId, teachers, spotMap);
 
-            courses.put(courseId, course);
             //todo write a test for createCourses()
         }
     }
