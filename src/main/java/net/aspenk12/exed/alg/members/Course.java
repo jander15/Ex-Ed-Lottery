@@ -101,6 +101,10 @@ public class Course {
         return retVal;
     }
 
+    public static Course getCourseFromID(String ID){
+        return courses.get(ID);
+    }
+
     /**
      * @return the number of existing courses (instances of course)
      */

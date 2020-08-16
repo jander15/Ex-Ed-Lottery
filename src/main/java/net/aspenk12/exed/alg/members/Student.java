@@ -10,10 +10,13 @@ import java.util.ArrayList;
 
 public class Student {
     private final int id;
-    private final String firstName, lastName;
-    private final String email;
-    private final Grade grade;
-    private final Gender gender;
+    public final String firstName, lastName;
+    public final String email;
+    public final Grade grade;
+    public final Gender gender;
+    public final int points;
+    
+    private final ArrayList<Course> previousCourses;
 
     private static ArrayList<Student> students;
 
@@ -49,16 +52,32 @@ public class Student {
                 throw new BadDataException(csv, i, 4, gradeString);
             }
 
-            new Student(firstName, lastName, email, grade, gender);
+            String pointsString = row[5];
+            int points;
+
+            try {
+                points = Integer.parseInt(pointsString);
+            } catch (NumberFormatException e){
+                throw new BadDataException(csv, i, 5, pointsString);
+            }
+            
+            new Student(firstName, lastName, email, grade, gender, points, makePreviousCourses(row));
         }
     }
 
-    /*protected for testing*/ Student(String firstName, String lastName, String email, Grade grade, Gender gender) {
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
+    /*protected for testing*/ Student(String firstName, String lastName, String email, Grade grade, Gender gender, int points, ArrayList<Course> previousCourses) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.grade = grade;
         this.gender = gender;
+        this.points = points;
+        this.previousCourses = previousCourses;
+
         id = findID(email);
 
         students.add(this);
@@ -73,5 +92,18 @@ public class Student {
         } catch (NumberFormatException e){
             throw new BadEmailException("A bad email was in your student dataset, the algorithm was unable to deduce the student id from the Email", email);
         }
+    }
+
+    /*protected for testing*/ static ArrayList<Course> makePreviousCourses(String[] row){
+        ArrayList<Course> courses = new ArrayList<>();
+        for (int i = 7; i < 10; i++) {
+            String courseId = row[i];
+            if(courseId.equals("")){
+                continue;
+            }
+            Course course = Course.getCourseFromID(courseId);
+            courses.add(course);
+        }
+        return courses;
     }
 }

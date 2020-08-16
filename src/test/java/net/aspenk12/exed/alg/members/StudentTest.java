@@ -2,6 +2,7 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.members.Student;
 import net.aspenk12.exed.util.BadEmailException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,7 +12,6 @@ public class StudentTest {
     @Test
     public void testFindID() {
         int id = Student.findID("alexandera11325@aspenk12.net");
-
         assertEquals(11325, id);
     }
 
@@ -23,5 +23,11 @@ public class StudentTest {
         } catch (BadEmailException e){
             //an exception was found, yay!
         }
+    }
+
+    @Test
+    @Ignore
+    public void testCreatePreviousCourses() {
+        //todo
     }
 }

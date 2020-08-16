@@ -7,7 +7,7 @@ import net.aspenk12.exed.alg.members.Course;
  */
 public class Pick {
     public final Course course;
-    public final int points;
+    public int points; //points can be modified in validation
 
     public Pick(Course course, int points) {
         this.course = course;
