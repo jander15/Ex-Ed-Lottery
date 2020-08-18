@@ -19,7 +19,7 @@ public abstract class MainPane extends StackPane {
 
     protected MainPane() {
         super();
-        setPrefSize(200,200);
+        setPrefSize(300,300);
 
         vBox.setAlignment(Pos.TOP_CENTER);
         getChildren().add(vBox);

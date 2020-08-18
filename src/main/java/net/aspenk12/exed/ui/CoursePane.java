@@ -3,6 +3,7 @@ package net.aspenk12.exed.ui;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.util.CSV;
 
@@ -18,6 +19,8 @@ public class CoursePane extends MainPane {
         fileButton.onActionProperty().setValue(e -> getFile());
 
         statusText.setFill(Color.RED);
+        statusText.setTextAlignment(TextAlignment.CENTER);
+        statusText.wrappingWidthProperty().bind(widthProperty());
 
         vBox.getChildren().addAll(fileButton, statusText);
     }

@@ -36,6 +36,13 @@ public class Application {
         return picks.get(i);
     }
 
+    /**
+     * Validates student-provided pick data. Validating this data is particularly important because:
+     * a) there's a ton of it, way too much to look through manually.
+     * b) because it's sourced from every student, there's plenty of opportunity for tomfoolery, mistakes, etc.
+     *
+     * Yes, we filter out negative picks.
+     */
     public void validate(){
         //create a copy of picks that we can modify as we iterate through
         List<Pick> copy = new ArrayList<>();
@@ -54,7 +61,7 @@ public class Application {
             boolean alreadyAttended = false;
             List<Course> previousCourses = student.getPreviousCourses();
             for (Course course : previousCourses) {
-                if(pick.course.equals(course)){ //todo override
+                if(pick.course.equals(course)){
                     alreadyAttended = true;
                     break;
                 }
@@ -80,14 +87,11 @@ public class Application {
             }
         }
 
-        //todo remove previous courses
-        //todo remove duplicate bets
-
-        if(picks.size() < MIN_PICKS){
+        if(copy.size() < MIN_PICKS){
             Warnings.logWarning("Student " + student.getFullName() + " had fewer than the minimum amount of picks");
         }
 
-        if(picks.size() > MAX_PICKS){
+        if(copy.size() > MAX_PICKS){
             Warnings.logWarning("Student " + student.getFullName() + " had more than the maximum amount of picks");
         }
 
