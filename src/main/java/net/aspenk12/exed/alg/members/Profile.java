@@ -1,16 +1,19 @@
 package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.util.BadDataException;
 import net.aspenk12.exed.util.CSV;
 import net.aspenk12.exed.util.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * A (Student) Profile contains 'validated' data about a student. It comprises of data specified in the validated CSV
+ * A (Student) Profile contains 'validated' data about a student. It comprises of data specified in the validated CSV.
  */
 public class Profile {
     public final int id;
@@ -19,15 +22,21 @@ public class Profile {
     public final Grade grade;
     public final int points;
 
+    private final List<Course> previousCourses;
+
     private static Map<Integer, Profile> profiles;
 
-    public Profile(int id, String firstName, String lastName, Gender gender, Grade grade, int points) {
+    /**
+     * This constructor is public for testing, but in practice it should only be called from inside the class.
+     */
+    public Profile(int id, String firstName, String lastName, Gender gender, Grade grade, int points, List<Course> previousCourses) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.grade = grade;
         this.points = points;
+        this.previousCourses = previousCourses;
     }
 
     public static void createProfiles(CSV csv) {
@@ -42,9 +51,6 @@ public class Profile {
             String genderString = row[3];
             String gradeString = row[4];
             String pointString = row[5];
-            String prevCourse1Str = row[6];
-            String prevCourse2Str = row[7];
-            String prevCourse3Str = row[8];
 
             int id = Util.getIDFromEmail(email);
 
@@ -71,16 +77,36 @@ public class Profile {
                 throw new BadDataException(csv, i, 5, pointString);
             }
 
-            Course prevCourse1 = Course.get(prevCourse1Str);
-            Course prevCourse2 = Course.get(prevCourse2Str);
-            Course prevCourse3 = Course.get(prevCourse3Str);
+            List<Course> previousCourses = new ArrayList<>();
 
-            if(prevCourse1 == null || prevCourse2 == null || prevCourse3 == null){
-                //throw new BadDataException();
+            //loop through previous course cells
+            for (int j = 6; j < 9; j++) {
+                String courseID = row[j];
+
+                //obviously, don't try to add empty cells to previous courses
+                if(!courseID.equals("")){
+                    Course c = Course.get(courseID);
+                    if(c == null) throw new BadDataException(csv,i, j, courseID);
+
+                    previousCourses.add(c);
+                }
             }
 
-            Profile profile = new Profile(id, firstName, lastName, gender, grade, points);
+            Profile profile = new Profile(id, firstName, lastName, gender, grade, points, previousCourses);
             profiles.put(id, profile);
         }
     }
+
+    public static Profile get(int id){
+        return profiles.get(id);
+    }
+
+    public List<Course> getPreviousCourses(){
+        return previousCourses;
+    }
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
 }

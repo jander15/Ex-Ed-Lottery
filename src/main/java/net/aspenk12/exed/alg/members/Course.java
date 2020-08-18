@@ -2,6 +2,7 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.util.BadDataException;
 import net.aspenk12.exed.util.CSV;
 
 import java.util.ArrayList;

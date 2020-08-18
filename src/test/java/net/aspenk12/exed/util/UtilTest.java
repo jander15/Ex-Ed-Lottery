@@ -16,7 +16,25 @@ public class UtilTest {
     public void testFailedFindID() {
         try {
             Util.getIDFromEmail("janderson@aspenk12.net");
-            fail("no email exception was thrown");
+            fail("expected a BadDataException");
+        } catch (BadDataException e){
+            //an exception was found, yay!
+        }
+    }
+
+    @Test
+    public void testExtractCourseID() {
+        String id = Util.extractCourseID("Soul <SS> Surfers");
+
+        assertEquals("SS", id);
+
+    }
+
+    @Test
+    public void testFailedExtractCourseID() {
+        try {
+            Util.extractCourseID("Soul Surfers");
+            fail("expected a BadDataException");
         } catch (BadDataException e){
             //an exception was found, yay!
         }

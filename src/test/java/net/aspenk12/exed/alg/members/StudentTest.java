@@ -11,7 +11,7 @@ public class StudentTest {
 
     @Test
     @Ignore
-    public void testCreatePreviousCourses() {
+    public void testCreateStudents() {
         //todo
     }
 }

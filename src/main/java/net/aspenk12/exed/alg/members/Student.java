@@ -1,23 +1,30 @@
 package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.util.BadDataException;
 import net.aspenk12.exed.util.CSV;
 import net.aspenk12.exed.util.Util;
+import net.aspenk12.exed.util.Warnings;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The student class represents every Student applying for Ex Ed.
+ * A student contains a Profile, full of validated info about the student,
+ * and a an Application, which contains student-produced data about the student's picks.
+ *
+ * A major weak point of this class, (and this whole system in general), is the process of linking the
+ * 'validated' Profile data with the unvalidated application data.
+ * @see Profile
+ * @see Application
+ */
 public class Student {
-    private final int id;
-    public final String firstName, lastName;
-    public final String email;
-    public final Grade grade;
-    public final Gender gender;
-    public final int points;
-    
-    private final List<Course> previousCourses;
+    public final Profile profile;
+    public final Application application;
 
     private static List<Student> students;
 
@@ -30,77 +37,49 @@ public class Student {
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
-            //todo make reflect actual csv
+            //todo address failure condition here
             String email = row[0];
-            String firstName = row[1];
-            String lastName = row[2];
+            int id = Util.getIDFromEmail(email);
+            Profile profile = Profile.get(id);
 
-            String genderString = row[3];
-            Gender gender;
+            Application application = new Application(profile);
 
-            try {
-                gender = Gender.getFromString(genderString);
-            } catch (Exception e) {
-                throw new BadDataException(csv, i, 3, genderString);
+            //create an application for each student by reading in the application data
+            //note the increment by 2, because the loop reads two values, course and bid, each cycle
+            //starts at 1 because j = 0 is the email field.
+            for (int j = 1; j < row.length; j += 2) {
+                String courseString = row[j];
+                String bidString = row[j + 1];
+
+                String courseId = Util.extractCourseID(courseString);
+
+                Course course = Course.get(courseId);
+
+                if(course == null){
+                    throw new BadDataException(csv, i, j, courseId);
+                }
+
+                //these data points should be validated automatically by google forms
+                //probably no need to catch the NumberFormatException
+                int bid = Integer.parseInt(bidString);
+
+                application.addPick(new Pick(course, bid));
             }
 
-            String gradeString = row[4];
-            Grade grade;
+            application.validate();
 
-            try {
-                grade = Grade.getFromInt(gradeString);
-            } catch (Exception e){
-                throw new BadDataException(csv, i, 4, gradeString);
-            }
-
-            String pointsString = row[5];
-            int points;
-
-            try {
-                points = Integer.parseInt(pointsString);
-            } catch (NumberFormatException e){
-                throw new BadDataException(csv, i, 5, pointsString);
-            }
-
-            students.add(
-                    new Student(firstName, lastName, email, grade,
-                            gender, points, makePreviousCourses(row))
-            );
+            students.add(new Student(profile, application));
         }
     }
 
-    public String getFullName(){
-        return firstName + " " + lastName;
-    }
 
     //public for testing - ideally students should only be created in createStudents()
-    public Student(String firstName, String lastName, String email, Grade grade, Gender gender, int points, List<Course> previousCourses) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.grade = grade;
-        this.gender = gender;
-        this.points = points;
-        this.previousCourses = previousCourses;
+    public Student(Profile profile, Application application) {
+        this.profile = profile;
+        this.application = application;
 
-        id = Util.getIDFromEmail(email);
-    }
-
-    public List<Course> getPreviousCourses(){
-        return previousCourses;
-    }
-
-    //todo test & update
-    /*protected for testing*/ static ArrayList<Course> makePreviousCourses(String[] row){
-        ArrayList<Course> courses = new ArrayList<>();
-        for (int i = 7; i < 10; i++) {
-            String courseId = row[i];
-            if(courseId.equals("")){
-                continue;
-            }
-            Course course = Course.get(courseId);
-            courses.add(course);
+        if (!application.isValidated()) {
+            Warnings.logWarning("Created a student with unvalidated application data");
         }
-        return courses;
     }
 }
