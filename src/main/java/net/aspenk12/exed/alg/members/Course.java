@@ -7,13 +7,14 @@ import net.aspenk12.exed.util.CSV;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Instances of course are static and created all at once upon createCourses().
  * Course acts much like a dynamic enum, where every instance exists in a static context with its properties attached
  */
 public class Course {
-    private static HashMap<String, Course> courses;
+    private static Map<String, Course> courses;
 
     public final String courseName;
     public final String courseId;

@@ -21,12 +21,12 @@ public enum Grade {
     /**
      * @throws Exception Translate this exception to a BadDataException at the data read level
      */
-    public static Grade getFromString(String s) throws Exception {
+    public static Grade getFromInt(int i) throws RuntimeException {
         for (Grade grade : values()) {
-            if (grade.name.equals(s)) {
+            if (grade.gradeNum == i) {
                 return grade;
             }
         }
-        throw new Exception("Couldn't find a Grade associated with String \"" + s + "\"");
+        throw new RuntimeException("Couldn't find a Grade associated with interger \"" + i + "\"");
     }
 }

@@ -1,8 +1,8 @@
 package net.aspenk12.exed.alg.containers;
 
 public enum Gender {
-    MALE("Male"),
-    FEMALE("Female");
+    MALE("M"),
+    FEMALE("F");
 
     public final String name;
 

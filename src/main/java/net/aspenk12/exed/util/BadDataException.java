@@ -22,6 +22,13 @@ public class BadDataException extends RuntimeException{
         super(makeString(csv, null, null, data));
     }
 
+    /**
+     * Standard form constructor
+     */
+    public BadDataException(String message){
+        super(message);
+    }
+
     private static String makeString(CSV csv, Integer row, Integer col, String data){
         String FilePath = csv.getFile().getPath();
 
