@@ -101,7 +101,10 @@ public class Course {
         return retVal;
     }
 
-    public static Course getCourseFromID(String ID){
+    /**
+     * Gets an instance of course using the course ID.
+     */
+    public static Course get(String ID){
         return courses.get(ID);
     }
 
@@ -111,4 +114,15 @@ public class Course {
     public static int courseCount(){
         return courses.size();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        return courseId != null ? courseId.equals(course.courseId) : course.courseId == null;
+    }
+
 }

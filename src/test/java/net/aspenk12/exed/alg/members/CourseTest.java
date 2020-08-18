@@ -3,7 +3,10 @@ package net.aspenk12.exed.alg.members;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.members.Course;
+import net.aspenk12.exed.util.CSV;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.*;
 import static net.aspenk12.exed.alg.members.Course.*;
@@ -34,5 +37,14 @@ public class CourseTest {
         assertEquals(spotMap.get(Grade.SENIOR, Gender.FEMALE), 15);
         assertEquals(spotMap.get(Grade.JUNIOR, Gender.MALE), 8);
         assertEquals(spotMap.get(Grade.JUNIOR, Gender.FEMALE), 9);
+    }
+
+    /**
+     * Creates example instances of Course using test/resources/coursetest.csv
+     */
+    public static void makeExampleCourses(){
+        File file = new File(CourseTest.class.getResource("/coursetest.csv").getFile());
+        CSV csv = new CSV(file);
+        Course.createCourses(csv);
     }
 }

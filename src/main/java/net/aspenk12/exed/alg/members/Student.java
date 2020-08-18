@@ -7,6 +7,7 @@ import net.aspenk12.exed.util.BadEmailException;
 import net.aspenk12.exed.util.CSV;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Student {
     private final int id;
@@ -16,9 +17,9 @@ public class Student {
     public final Gender gender;
     public final int points;
     
-    private final ArrayList<Course> previousCourses;
+    private final List<Course> previousCourses;
 
-    private static ArrayList<Student> students;
+    private static List<Student> students;
 
     public static void createStudents(CSV csv){
         //only create students once, duh.
@@ -60,8 +61,11 @@ public class Student {
             } catch (NumberFormatException e){
                 throw new BadDataException(csv, i, 5, pointsString);
             }
-            
-            new Student(firstName, lastName, email, grade, gender, points, makePreviousCourses(row));
+
+            students.add(
+                    new Student(firstName, lastName, email, grade,
+                            gender, points, makePreviousCourses(row))
+            );
         }
     }
 
@@ -69,7 +73,8 @@ public class Student {
         return firstName + " " + lastName;
     }
 
-    /*protected for testing*/ Student(String firstName, String lastName, String email, Grade grade, Gender gender, int points, ArrayList<Course> previousCourses) {
+    //public for testing - ideally students should only be created in createStudents()
+    public Student(String firstName, String lastName, String email, Grade grade, Gender gender, int points, List<Course> previousCourses) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -79,8 +84,6 @@ public class Student {
         this.previousCourses = previousCourses;
 
         id = findID(email);
-
-        students.add(this);
     }
 
     /*protected for testing*/ static int findID(String email){
@@ -94,6 +97,11 @@ public class Student {
         }
     }
 
+    public List<Course> getPreviousCourses(){
+        return previousCourses;
+    }
+
+    //todo test & update
     /*protected for testing*/ static ArrayList<Course> makePreviousCourses(String[] row){
         ArrayList<Course> courses = new ArrayList<>();
         for (int i = 7; i < 10; i++) {
@@ -101,7 +109,7 @@ public class Student {
             if(courseId.equals("")){
                 continue;
             }
-            Course course = Course.getCourseFromID(courseId);
+            Course course = Course.get(courseId);
             courses.add(course);
         }
         return courses;
