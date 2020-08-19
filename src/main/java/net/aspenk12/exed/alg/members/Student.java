@@ -51,6 +51,10 @@ public class Student {
                 String courseString = row[j];
                 String bidString = row[j + 1];
 
+                if(courseString.equals("") || bidString.equals("")){
+                    continue;
+                }
+
                 String courseId = Util.extractCourseID(courseString);
 
                 Course course = Course.get(courseId);
@@ -70,6 +74,10 @@ public class Student {
 
             students.add(new Student(profile, application));
         }
+    }
+
+    public static List<Student> getStudents(){
+        return students;
     }
 
 

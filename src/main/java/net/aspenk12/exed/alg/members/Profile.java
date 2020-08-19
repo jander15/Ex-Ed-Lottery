@@ -42,6 +42,8 @@ public class Profile {
     public static void createProfiles(CSV csv) {
         if(profiles != null) return;
 
+        profiles = new HashMap<>();
+
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
