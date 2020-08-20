@@ -1,31 +1,17 @@
 package net.aspenk12.exed.ui;
 
-import javafx.scene.control.Button;
+import net.aspenk12.exed.alg.members.Profile;
+import net.aspenk12.exed.util.CSV;
 
-import java.io.File;
-
-/**
- * First part of the main window for entering student data
- */
-public class StudentPane extends MainPane {
-    private File studentFile;
-    private Button validateButton;
+public class StudentPane extends MainPane{
 
     public StudentPane() {
-        super();
-
-        Button uploadButton = new Button("Upload Student Data");
-        uploadButton.onActionProperty().setValue(e -> uploadStudentCSV());
-
-        validateButton = new Button("Validate Student Data");
-        validateButton.setDisable(true);
-
-        vBox.getChildren().add(uploadButton);
-        vBox.getChildren().add(validateButton);
+        super("Attach Student Data");
     }
 
-    private void uploadStudentCSV(){
-        studentFile = openFileChooser();
-        validateButton.setDisable(false);
+    @Override
+    protected void run() {
+        CSV profileData = new CSV(openFileChooser());
+        Profile.createProfiles(profileData);
     }
 }

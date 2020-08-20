@@ -1,31 +1,85 @@
 package net.aspenk12.exed.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class representing shared values of all panes in the MainWindow
  */
 public abstract class MainPane extends StackPane {
 
+    private static final Background disabledBackground;
+    private static final Background enabledBackground;
+
+    //consider translating all this to css
+    static {
+        Insets insets = new Insets(0);
+        CornerRadii radii = CornerRadii.EMPTY;
+
+        disabledBackground = new Background(new BackgroundFill(Color.GAINSBORO, radii, insets));
+        enabledBackground = new Background(new BackgroundFill(Color.AZURE, radii, insets));
+    }
+
+    /**
+     * Ordered list of MainPanes to control the transition between panes.
+     */
+    private static final List<MainPane> mainPanes = new ArrayList<>();
+    private static int currentActivePane = 0;
+
+    private boolean active;
+
     /**
      * All MainPanes inherit a standardized vBox for formatting
      */
     protected VBox vBox = new VBox(20);
 
-    protected MainPane() {
+    private final Button mainButton;
+
+    //adds a bit of empty space to the very top of the vbox
+    private final Region spacer = new Region();
+
+    protected MainPane(String buttonText) {
         super();
+
         setPrefSize(300,300);
+        setAlignment(Pos.CENTER);
+
+        mainButton = new Button(buttonText);
+        mainButton.onActionProperty().setValue(e -> onClick());
+
+        spacer.setPrefHeight(40);
 
         vBox.setAlignment(Pos.TOP_CENTER);
+        vBox.getChildren().addAll(spacer, mainButton);
+
         getChildren().add(vBox);
 
-        setAlignment(Pos.CENTER);
+        setActive(mainPanes.isEmpty());
+
+        mainPanes.add(this);
     }
+
+    private void setActive(boolean active){
+        this.active = active;
+
+        if(active){
+            setBackground(enabledBackground);
+        } else {
+            setBackground(disabledBackground);
+        }
+
+        //maybe change this to get rid of the negative
+        mainButton.setDisable(!active);
+    }
+
 
     /**
      * Used by multiple panes to select CSVs
@@ -38,4 +92,18 @@ public abstract class MainPane extends StackPane {
 
         return fileChooser.showOpenDialog(MainWindow.getStage());
     }
+
+    private void onClick(){
+        run();
+
+        currentActivePane++;
+        setActive(false);
+        mainPanes.get(currentActivePane).setActive(true);
+    }
+
+    /**
+     * Overridden in each sublcass of MainPane,
+     * specifies what the main button should do when it's clicked.
+     */
+    protected abstract void run();
 }

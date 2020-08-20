@@ -1,5 +1,8 @@
 package net.aspenk12.exed.alg.members;
 
+import net.aspenk12.exed.alg.containers.Gender;
+import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.util.CSV;
 import org.junit.Test;
 
@@ -18,7 +21,27 @@ public class StudentTest {
 
         List<Student> students = Student.getStudents();
 
-        //todo finish this test
+
+        //test alex's data because why not ig
+        Student alex = students.get(0);
+
+        assertEquals(alex.profile.firstName, "Alex");
+        assertEquals(alex.profile.lastName, "Appleby" );
+        assertEquals(alex.profile.id, 11325);
+        assertEquals(alex.profile.gender, Gender.MALE);
+        assertEquals(alex.profile.points, 5);
+        assertEquals(alex.profile.grade, Grade.SENIOR);
+
+        Pick firstPick = alex.application.getPick(0);
+
+        //the fifth bid is actually the last one because one pick should be autoremoved
+        Pick lastPick = alex.application.getPick(4);
+
+        assertEquals(firstPick.course, Course.get("SS"));
+        assertEquals(firstPick.bid, 5);
+
+        assertEquals(lastPick.course, Course.get("ET"));
+        assertEquals(lastPick.bid, 5);
     }
 
     /**

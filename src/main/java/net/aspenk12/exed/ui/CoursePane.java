@@ -10,25 +10,22 @@ import net.aspenk12.exed.util.CSV;
 import java.io.File;
 
 public class CoursePane extends MainPane {
-    private Button fileButton = new Button("Select Course Data");
     private Text statusText = new Text("Status: Waiting for a CSV file");
 
     public CoursePane() {
-        super();
-
-        fileButton.onActionProperty().setValue(e -> getFile());
-
+        super("Attach Course Data");
         statusText.setFill(Color.RED);
+
         statusText.setTextAlignment(TextAlignment.CENTER);
         statusText.wrappingWidthProperty().bind(widthProperty());
 
-        vBox.getChildren().addAll(fileButton, statusText);
+        vBox.getChildren().add(statusText);
     }
 
-    private void getFile(){
-        File file = openFileChooser();
-        CSV csv = new CSV(file);
-        Course.createCourses(csv);
+    @Override
+    protected void run() {
+        CSV courseData = new CSV(openFileChooser());
+        Course.createCourses(courseData);
 
         statusText.setText("Status: Courses created from CSV. " + Course.courseCount() + " courses recognized.");
         statusText.setFill(Color.GREEN);
