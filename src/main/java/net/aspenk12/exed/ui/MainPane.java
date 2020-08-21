@@ -27,7 +27,7 @@ public abstract class MainPane extends StackPane {
         CornerRadii radii = CornerRadii.EMPTY;
 
         disabledBackground = new Background(new BackgroundFill(Color.GAINSBORO, radii, insets));
-        enabledBackground = new Background(new BackgroundFill(Color.AZURE, radii, insets));
+        enabledBackground = new Background(new BackgroundFill(Color.WHITESMOKE, radii, insets));
     }
 
     /**

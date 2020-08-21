@@ -2,11 +2,11 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
-import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.util.CSV;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static net.aspenk12.exed.alg.members.Course.*;
@@ -26,7 +26,7 @@ public class CourseTest {
 
     @Test
     public void testSpotMap() {
-        SpotMap spotMap = new SpotMap();
+        SpotMap spotMap = new SpotMap(10);
 
         spotMap.put(Grade.SENIOR, Gender.MALE, 12);
         spotMap.put(Grade.SENIOR, Gender.FEMALE, 15);
@@ -37,6 +37,30 @@ public class CourseTest {
         assertEquals(spotMap.get(Grade.SENIOR, Gender.FEMALE), 15);
         assertEquals(spotMap.get(Grade.JUNIOR, Gender.MALE), 8);
         assertEquals(spotMap.get(Grade.JUNIOR, Gender.FEMALE), 9);
+
+        assertEquals(spotMap.maxSpots, 10);
+    }
+
+    @Test
+    public void testExampleCourses(){
+        makeExampleCourses();
+
+        assertEquals(Course.courseCount(), 12);
+
+        Course soulSurfers = Course.get("SS");
+
+        assertEquals(soulSurfers.courseName, "Soul Surfers");
+        assertEquals(soulSurfers.teachers, "Kiffdawg");
+        assertEquals(soulSurfers.courseId, "SS");
+
+        SpotMap spotMap = soulSurfers.spotMap;
+
+        for (Map<Gender, Integer> subMap : spotMap.values()) {
+            assertEquals(subMap.get(Gender.MALE).intValue(), 2);
+            assertEquals(subMap.get(Gender.FEMALE).intValue(), 2);
+        }
+
+        assertEquals(10, spotMap.maxSpots);
     }
 
     /**

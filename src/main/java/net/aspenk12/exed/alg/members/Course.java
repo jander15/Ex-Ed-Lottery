@@ -44,7 +44,8 @@ public class Course {
             String courseName = row[1];
             String teachers = row[2];
 
-            SpotMap spotMap = new SpotMap();
+            String maxSpots = row[11];
+            SpotMap spotMap = new SpotMap(Integer.parseInt(maxSpots));
 
             Integer[] spots = getSpotsFromRow(row);
 
@@ -68,6 +69,12 @@ public class Course {
      * Custom double-hashmap specifically for managing spots on a trip
      */
     public static class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>>{
+        public final int maxSpots;
+
+        public SpotMap(int maxSpots) {
+            this.maxSpots = maxSpots;
+        }
+
         /*protected for testing*/ void put(Grade grade, Gender gender, int spots){
             HashMap<Gender, Integer> genderMap = get(grade);
 
