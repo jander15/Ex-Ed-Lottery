@@ -14,7 +14,7 @@ import java.io.File;
 public class ApplicationPane extends MainPane {
 
     public ApplicationPane() {
-        super("Attach Application Data");
+        super("Add Student Picks","Attach Application Data");
     }
 
     @Override

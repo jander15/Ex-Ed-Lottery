@@ -5,6 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -42,12 +44,15 @@ public abstract class MainPane extends StackPane {
     protected VBox vBox = new VBox(20);
 
     private final Button mainButton;
+    private final MainText mainText;
 
     //adds a bit of empty space to the very top of the vbox
     private final Region spacer = new Region();
 
-    protected MainPane(String buttonText) {
+    protected MainPane(String title, String buttonText) {
         super();
+
+        mainText = new MainText(title);
 
         setPrefSize(300,300);
         setAlignment(Pos.CENTER);
@@ -58,7 +63,7 @@ public abstract class MainPane extends StackPane {
         spacer.setPrefHeight(40);
 
         vBox.setAlignment(Pos.TOP_CENTER);
-        vBox.getChildren().addAll(spacer, mainButton);
+        vBox.getChildren().addAll(mainText, spacer, mainButton);
 
         getChildren().add(vBox);
 
@@ -69,6 +74,8 @@ public abstract class MainPane extends StackPane {
 
     private void setActive(boolean active){
         this.active = active;
+
+        mainText.setActive(active);
 
         if(active){
             setBackground(enabledBackground);
@@ -106,4 +113,20 @@ public abstract class MainPane extends StackPane {
      * specifies what the main button should do when it's clicked.
      */
     protected abstract void run();
+
+    private static class MainText extends Text{
+        private static Font font = Font.loadFont(
+                MainText.class.getResource("/Karrik-Regular.ttf").toExternalForm(), 22);
+
+        public MainText(String text) {
+            super(text);
+            setFont(font);
+            setFill(Color.DARKGRAY);
+        }
+
+        private void setActive(boolean active){
+            Color color = active ? Color.RED: Color.DARKGRAY;
+            setFill(color);
+        }
+    }
 }

@@ -13,7 +13,7 @@ public class CoursePane extends MainPane {
     private Text statusText = new Text("Status: Waiting for a CSV file");
 
     public CoursePane() {
-        super("Attach Course Data");
+        super("Create your Ex Ed Courses","Attach Course Data");
         statusText.setFill(Color.RED);
 
         statusText.setTextAlignment(TextAlignment.CENTER);

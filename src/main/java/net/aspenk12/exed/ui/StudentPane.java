@@ -6,7 +6,7 @@ import net.aspenk12.exed.util.CSV;
 public class StudentPane extends MainPane{
 
     public StudentPane() {
-        super("Attach Student Data");
+        super("Verify the student body","Attach Student Data");
     }
 
     @Override
