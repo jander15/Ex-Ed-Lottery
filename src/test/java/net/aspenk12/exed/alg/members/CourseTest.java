@@ -2,6 +2,7 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
 import org.junit.Test;
 
@@ -9,7 +10,6 @@ import java.io.File;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static net.aspenk12.exed.alg.members.Course.*;
 
 
 public class CourseTest {

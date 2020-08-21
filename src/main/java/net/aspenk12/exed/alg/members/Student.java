@@ -1,8 +1,6 @@
 package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Application;
-import net.aspenk12.exed.alg.containers.Gender;
-import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.util.BadDataException;
 import net.aspenk12.exed.util.CSV;
@@ -25,6 +23,9 @@ import java.util.List;
 public class Student {
     public final Profile profile;
     public final Application application;
+
+    //tracks which picks the student has 'tried to get on' in the algorithm
+    /*Algorithm*/ Pick currentPick;
 
     private static List<Student> students;
 
@@ -67,7 +68,7 @@ public class Student {
                 //probably no need to catch the NumberFormatException
                 int bid = Integer.parseInt(bidString);
 
-                application.addPick(new Pick(course, bid));
+                application.addNewPick(course, bid);
             }
 
             application.validate();
@@ -78,6 +79,29 @@ public class Student {
 
     public static List<Student> getStudents(){
         return students;
+    }
+
+    /**
+     * Are these two students the same gender and grade?
+     */
+    public boolean sameDemographic(Student student){
+        boolean sameGender = student.profile.gender.equals(profile.gender);
+        boolean sameGrade = student.profile.grade.equals(profile.grade);
+
+        return sameGender && sameGrade;
+    }
+
+    /**
+     * Advances the currentPick to the next one
+     * @return true if there are no remaining picks to advance to
+     */
+    public boolean advancePick(){
+        if(currentPick.index == application.pickCount() - 1){
+            //the current pick is the last pick
+            return true;
+        }
+        currentPick = application.getPick(currentPick.index + 1);
+        return false;
     }
 
 

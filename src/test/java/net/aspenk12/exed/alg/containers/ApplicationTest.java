@@ -23,13 +23,13 @@ public class ApplicationTest {
         Profile profile = new Profile(11325, "Alex", "Appleby", Gender.MALE, Grade.SENIOR,30, previousCourses);
 
         Application application = new Application(profile);
-        application.addPick(new Pick(Course.get("SS"), 10)); //course already attended
-        application.addPick(new Pick(Course.get("ZC"), 15));
-        application.addPick(new Pick(Course.get("WE"), 6));
-        application.addPick(new Pick(Course.get("CT"), -10)); //negative value
-        application.addPick(new Pick(Course.get("WE"), 12)); //duplicate, should be removed
-        application.addPick(new Pick(Course.get("NM"), 2));
-        application.addPick(new Pick(Course.get("ET"), 50)); //more than points, should be rounded down
+        application.addNewPick(Course.get("SS"), 10); //course already attended
+        application.addNewPick(Course.get("ZC"), 15);
+        application.addNewPick(Course.get("WE"), 6);
+        application.addNewPick(Course.get("CT"), -10); //negative value
+        application.addNewPick(Course.get("WE"), 12); //duplicate, should be removed
+        application.addNewPick(Course.get("NM"), 2);
+        application.addNewPick(Course.get("ET"), 50); //more than points, should be rounded down
 
         application.validate();
 

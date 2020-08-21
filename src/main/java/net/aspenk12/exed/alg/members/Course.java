@@ -2,13 +2,10 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
-import net.aspenk12.exed.util.BadDataException;
+import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Instances of course are static and created all at once upon createCourses().
@@ -21,6 +18,8 @@ public class Course {
     public final String courseId;
     public final String teachers;
     public final SpotMap spotMap;
+
+    private List<Student> students =  new ArrayList<>();
 
     public Course(String courseName, String courseId, String teachers, SpotMap spotMap) {
         this.courseName = courseName;
@@ -66,32 +65,6 @@ public class Course {
     }
 
     /**
-     * Custom double-hashmap specifically for managing spots on a trip
-     */
-    public static class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>>{
-        public final int maxSpots;
-
-        public SpotMap(int maxSpots) {
-            this.maxSpots = maxSpots;
-        }
-
-        /*protected for testing*/ void put(Grade grade, Gender gender, int spots){
-            HashMap<Gender, Integer> genderMap = get(grade);
-
-            if(genderMap == null){
-                genderMap = new HashMap<>();
-                put(grade, genderMap);
-            }
-            //if gendermap exists, it's already in the encompassing map
-            genderMap.put(gender, spots);
-        }
-
-        public int get(Grade grade, Gender gender){
-            return get(grade).get(gender);
-        }
-    }
-
-    /**
      * Takes a row from a course csv, cuts out the data with the course spots,
      * casts, then returns it as a smaller array of ints.
      */
@@ -110,6 +83,49 @@ public class Course {
         return retVal;
     }
 
+
+    /**
+     * Attempts to place a student on this trip.
+     *
+     * @return The outbid student in the case of a bidding war. Otherwise, this method returns null.
+     */
+    /*Algorithm*/ Student placeStudent(Student student){
+        if(spotMap.maxSpots > 0){
+            addStudent(student);
+            return null;
+        }
+
+        for (int i = 0; i < students.size(); i++) {
+            Student otherStudent = students.get(i);
+
+            //if the other student is the same demographic as this one, they can be outbid
+            if (otherStudent.sameDemographic(student)){
+                int bid = student.currentPick.bid;
+                int otherBid = otherStudent.currentPick.bid;
+
+                if(bid == otherBid){
+                    //todo compare lotto numbers
+                    return otherStudent;
+                } else if (bid > otherBid){
+                    replaceStudent(i, student);
+                    return otherStudent;
+                }
+            }
+        }
+
+        //if we got through the loop, the student didn't make it onto the trip.
+        return student;
+    }
+
+    private void addStudent(Student s) {
+        students.add(s);
+        spotMap.maxSpots--;
+    }
+
+    private void replaceStudent(int i, Student s){
+
+    }
+
     /**
      * Gets an instance of course using the course ID.
      */
@@ -122,6 +138,10 @@ public class Course {
      */
     public static int courseCount(){
         return courses.size();
+    }
+
+    public static Map<String, Course> getCourses(){
+        return courses;
     }
 
     @Override

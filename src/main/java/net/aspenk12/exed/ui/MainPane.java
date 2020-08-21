@@ -87,7 +87,6 @@ public abstract class MainPane extends StackPane {
         mainButton.setDisable(!active);
     }
 
-
     /**
      * Used by multiple panes to select CSVs
      */

@@ -25,11 +25,13 @@ public class Application {
     /**
      * Adds a pick to the application. Picks ordered by which is added first.
      */
-    public void addPick(Pick pick){
+    public void addNewPick(Course course, int bid){
         if(validated){
             throw new UnsupportedOperationException("Tried to modify an application after validation");
         }
-        picks.add(pick);
+
+        int index = picks.size() - 1;
+        picks.add(new Pick(course, bid, index));
     }
 
     public Pick getPick(int i){
@@ -41,6 +43,14 @@ public class Application {
 
     public boolean isValidated() {
         return validated;
+    }
+
+    public int pickCount(){
+        return picks.size();
+    }
+
+    public List<Pick> getPicks(){
+        return picks;
     }
 
     /**
