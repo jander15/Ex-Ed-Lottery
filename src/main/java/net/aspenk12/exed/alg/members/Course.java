@@ -4,6 +4,7 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
+import net.aspenk12.exed.util.Util;
 
 import java.util.*;
 
@@ -12,14 +13,14 @@ import java.util.*;
  * Course acts much like a dynamic enum, where every instance exists in a static context with its properties attached
  */
 public class Course {
-    private static Map<String, Course> courses;
+    private static Map<String, Course> courses = new HashMap<>();
 
     public final String courseName;
     public final String courseId;
     public final String teachers;
     public final SpotMap spotMap;
 
-    private List<Student> students =  new ArrayList<>();
+    private final List<Student> students =  new ArrayList<>();
 
     public Course(String courseName, String courseId, String teachers, SpotMap spotMap) {
         this.courseName = courseName;
@@ -31,20 +32,19 @@ public class Course {
     }
 
     public static void createCourses(CSV csv){
-        if(courses != null) return; //courses should only be created once
-
-        courses = new HashMap<>();
+        if(!courses.isEmpty()) return; //courses should only be created once
 
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
-            //todo align this setup with the formatting of the actual csv
             String courseId = row[0];
             String courseName = row[1];
             String teachers = row[2];
 
-            String maxSpots = row[11];
-            SpotMap spotMap = new SpotMap(Integer.parseInt(maxSpots));
+            String maxSpotString = row[11];
+            int maxSpots = Util.parseIntCSV(maxSpotString, csv, i, 11);
+
+            SpotMap spotMap = new SpotMap(maxSpots);
 
             Integer[] spots = getSpotsFromRow(row);
 
@@ -59,8 +59,6 @@ public class Course {
             spotMap.put(Grade.FRESHMAN, Gender.FEMALE, spots[7]);
 
             new Course(courseName, courseId, teachers, spotMap);
-
-            //todo write a test for createCourses()
         }
     }
 
@@ -68,10 +66,9 @@ public class Course {
      * Takes a row from a course csv, cuts out the data with the course spots,
      * casts, then returns it as a smaller array of ints.
      */
-    //todo make this return primitive data?
+    //todo make this return primitive data? maybe even find a better way to do this? idk
     /*protected for testing*/ static Integer[] getSpotsFromRow(String[] row){
         ArrayList<Integer> spotCounts = new ArrayList<>();
-        //todo align this setup with the formatting of the actual csv
         String[] spots = Arrays.copyOfRange(row, 3, 11);
         for (String spot : spots) {
             int spotCount = Integer.parseInt(spot);
@@ -90,9 +87,12 @@ public class Course {
      * @return The outbid student in the case of a bidding war. Otherwise, this method returns null.
      */
     /*Algorithm*/ Student placeStudent(Student student){
-        if(spotMap.maxSpots > 0){
-            addStudent(student);
-            return null;
+        Profile profile = student.profile;
+        if(spotMap.getMaxSpots() > 0){
+            if(spotMap.get(profile.grade, profile.gender) > 0){
+                addStudent(student);
+                return null;
+            }
         }
 
         for (int i = 0; i < students.size(); i++) {
@@ -104,10 +104,12 @@ public class Course {
                 int otherBid = otherStudent.currentPick.bid;
 
                 if(bid == otherBid){
-                    //todo compare lotto numbers
-                    return otherStudent;
+                    Profile otherProfile = otherStudent.profile;
+                    if(profile.lottoNumber > otherProfile.lottoNumber){
+                        return otherStudent;
+                    }
                 } else if (bid > otherBid){
-                    replaceStudent(i, student);
+                    students.set(i, student);
                     return otherStudent;
                 }
             }
@@ -119,11 +121,7 @@ public class Course {
 
     private void addStudent(Student s) {
         students.add(s);
-        spotMap.maxSpots--;
-    }
-
-    private void replaceStudent(int i, Student s){
-
+        spotMap.takeSpot(s);
     }
 
     /**
@@ -131,6 +129,10 @@ public class Course {
      */
     public static Course get(String ID){
         return courses.get(ID);
+    }
+
+    public List<Student> getStudents(){
+        return students;
     }
 
     /**

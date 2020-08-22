@@ -16,7 +16,7 @@ public class StudentTest {
     @Test
     public void testCreateStudents() {
         CourseTest.makeExampleCourses();
-        makeExampleProfiles();
+        ProfileTest.makeExampleProfiles();
         makeExampleStudents();
 
         List<Student> students = Student.getStudents();
@@ -42,14 +42,6 @@ public class StudentTest {
 
         assertEquals(lastPick.course, Course.get("ET"));
         assertEquals(lastPick.bid, 5);
-    }
-
-    /**
-     * Creates example instances of Profile using test/resources/validatedtest.csv
-     */
-    public static void makeExampleProfiles(){
-        File file = new File(StudentTest.class.getResource("/validatedtest.csv").getFile());
-        Profile.createProfiles(new CSV(file));
     }
 
     /**

@@ -30,7 +30,7 @@ public class Application {
             throw new UnsupportedOperationException("Tried to modify an application after validation");
         }
 
-        int index = picks.size() - 1;
+        int index = picks.size();
         picks.add(new Pick(course, bid, index));
     }
 

@@ -20,7 +20,7 @@ public class ApplicationTest {
         previousCourses.add(Course.get("JH"));
         previousCourses.add(Course.get("CC"));
 
-        Profile profile = new Profile(11325, "Alex", "Appleby", Gender.MALE, Grade.SENIOR,30, previousCourses);
+        Profile profile = new Profile(11325, "Alex", "Appleby", Gender.MALE, Grade.SENIOR,30, 1, previousCourses);
 
         Application application = new Application(profile);
         application.addNewPick(Course.get("SS"), 10); //course already attended

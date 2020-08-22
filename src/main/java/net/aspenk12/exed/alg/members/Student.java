@@ -113,5 +113,7 @@ public class Student {
         if (!application.isValidated()) {
             Warnings.logWarning("Created a student with unvalidated application data");
         }
+
+        currentPick = application.getPick(0);
     }
 }

@@ -6,6 +6,17 @@ package net.aspenk12.exed.util;
 public class Util {
 
     /**
+     * Echos Integer.parseInt(), but automatically wraps with a try/catch and translates to BadDataException
+     */
+    public static int parseIntCSV(String string, CSV csv, int row, int col){
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e){
+            throw new BadDataException(csv, row, col, string);
+        }
+    }
+
+    /**
      * Finds the ID in a student email and returns it as an integer.
      */
     public static int getIDFromEmail(String email){

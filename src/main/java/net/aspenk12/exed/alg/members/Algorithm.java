@@ -20,11 +20,10 @@ public class Algorithm {
         }
     }
 
-
     /**
      * Attempts to fit a student on to it's next choice of course.
-     * If this student displaces another student, this method acts recursively,
-     * attempting to placeStudent() if a student is outbid for there spot
+     * This method acts recursively. If the student fails to get on a course,
+     * or if the student outbids another student, this method calls applyToNext on one of those students accordingly
      */
     /*protected 4 test*/ static void applyToNext(Student student){
         List<Pick> picks = student.application.getPicks();
