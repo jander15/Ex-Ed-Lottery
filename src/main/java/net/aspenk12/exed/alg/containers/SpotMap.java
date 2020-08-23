@@ -45,6 +45,17 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
         //set the previous integer to the same number - 1
         //yeah, this is pretty gross
         int prev = get(student.profile.grade, student.profile.gender);
+
         put(student.profile.grade, student.profile.gender, prev - 1);
+    }
+
+    public void addSpot(Student student){
+        maxSpots++;
+
+        //set the previous integer to the same number + 1
+        //one could factor out the shared code between this and takeSpot() if they pleased.
+        int prev = get(student.profile.grade, student.profile.gender);
+
+        put(student.profile.grade, student.profile.gender, prev + 1);
     }
 }

@@ -51,7 +51,7 @@ public class CourseTest {
     public void testExampleCourses(){
         makeExampleCourses();
 
-        assertEquals(Course.courseCount(), 12);
+        assertEquals(12, Course.courseCount());
 
         Course soulSurfers = Course.get("SS");
 

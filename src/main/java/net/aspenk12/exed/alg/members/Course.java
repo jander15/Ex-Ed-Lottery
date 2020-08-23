@@ -88,28 +88,31 @@ public class Course {
      */
     /*Algorithm*/ Student placeStudent(Student student){
         Profile profile = student.profile;
-        if(spotMap.getMaxSpots() > 0){
-            if(spotMap.get(profile.grade, profile.gender) > 0){
-                addStudent(student);
-                return null;
-            }
+
+        //students are demographically limited when there is space for them in the total course count,
+        //but they are limited by demographic spots.
+        boolean demLimited = (spotMap.get(profile.grade, profile.gender) <= 0);
+
+        if(spotMap.getMaxSpots() > 0 && !demLimited){
+            addStudent(student);
+            return null;
         }
 
         for (int i = 0; i < students.size(); i++) {
             Student otherStudent = students.get(i);
 
-            //if the other student is the same demographic as this one, they can be outbid
-            if (otherStudent.sameDemographic(student)){
+            //if this student is demographically limited, they can only replace students of the same dem.
+            //otherwise, they can replace anyone
+            if (!demLimited || otherStudent.sameDemographic(student)){
                 int bid = student.currentPick.bid;
                 int otherBid = otherStudent.currentPick.bid;
 
-                if(bid == otherBid){
-                    Profile otherProfile = otherStudent.profile;
-                    if(profile.lottoNumber > otherProfile.lottoNumber){
-                        return otherStudent;
-                    }
-                } else if (bid > otherBid){
-                    students.set(i, student);
+                boolean largerBid = (bid > otherBid);
+                boolean equalBid = (bid == otherBid);
+                boolean largerLotto = (profile.lottoNumber > otherStudent.profile.lottoNumber);
+
+                if(largerBid || (equalBid && largerLotto)){
+                    replaceStudent(student, otherStudent, i);
                     return otherStudent;
                 }
             }
@@ -117,6 +120,17 @@ public class Course {
 
         //if we got through the loop, the student didn't make it onto the trip.
         return student;
+    }
+
+    private void replaceStudent(Student student, Student otherStudent, int i){
+        //if the students are the same demographic, you don't have to make any changes.
+
+        if(!otherStudent.sameDemographic(student)) {
+            spotMap.addSpot(otherStudent);
+            spotMap.takeSpot(student);
+        }
+        students.set(i, student);
+
     }
 
     private void addStudent(Student s) {

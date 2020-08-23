@@ -26,10 +26,7 @@ public class Algorithm {
      * or if the student outbids another student, this method calls applyToNext on one of those students accordingly
      */
     /*protected 4 test*/ static void applyToNext(Student student){
-        List<Pick> picks = student.application.getPicks();
-
         Course course = student.currentPick.course;
-
         Student nextStudent = course.placeStudent(student);
 
         //if the next student is null, no students were outbid and our job is done here.
