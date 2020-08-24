@@ -82,11 +82,17 @@ public class AlgorithmTest {
 
         assertTrue(courseList.contains(andrew));
         assertTrue(courseList.contains(dyer));
-        assertTrue(courseList.contains(lexi));
+        assertTrue(courseList.contains(lexi)); //TODO issue is bc students don't 'retry' to get on the same list
 
         assertFalse(courseList.contains(lars));
         assertFalse(courseList.contains(tatum));
         assertFalse(courseList.contains(dillon));
+
+        List<Student> unlucky = alg.getUnlucky();
+
+        assertTrue(unlucky.contains(lars));
+        assertTrue(unlucky.contains(tatum));
+        assertTrue(unlucky.contains(dillon));
     }
 
     /**

@@ -124,7 +124,6 @@ public class Course {
 
     private void replaceStudent(Student student, Student otherStudent, int i){
         //if the students are the same demographic, you don't have to make any changes.
-
         if(!otherStudent.sameDemographic(student)) {
             spotMap.addSpot(otherStudent);
             spotMap.takeSpot(student);
