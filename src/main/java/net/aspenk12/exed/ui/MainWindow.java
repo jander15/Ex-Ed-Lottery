@@ -24,6 +24,8 @@ public class MainWindow {
         hLayout.getChildren().add(new StudentPane());
         hLayout.getChildren().add(new Separator(Orientation.VERTICAL));
         hLayout.getChildren().add(new ApplicationPane());
+        hLayout.getChildren().add(new Separator(Orientation.VERTICAL));
+        hLayout.getChildren().add(new AlgorithmPane());
 
         Scene scene = new Scene(hLayout);
         mainStage.setScene(scene);

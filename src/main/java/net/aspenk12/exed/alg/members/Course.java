@@ -155,6 +155,14 @@ public class Course {
         return courses.size();
     }
 
+    public static int findTotalSpots(){
+        int total = 0;
+        for (Course c : courses.values()) {
+            total += c.spotMap.getMaxSpots();
+        }
+        return total;
+    }
+
     public static Map<String, Course> getCourses(){
         return courses;
     }

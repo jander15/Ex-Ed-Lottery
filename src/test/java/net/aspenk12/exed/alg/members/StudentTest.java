@@ -4,6 +4,7 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.util.CSV;
+import net.aspenk12.exed.util.ProfileLinkException;
 import org.junit.Test;
 
 import java.io.File;
@@ -44,12 +45,34 @@ public class StudentTest {
         assertEquals(lastPick.bid, 5);
     }
 
+    @Test
+    public void testLinkFailure(){
+        CourseTest.makeExampleCourses();
+        ProfileTest.makeExampleProfiles();
+
+        //note id discrepancy against data in test profiles (actual id = 11325)
+        try {
+            Student.linkProfile("alexandera11235@aspenk12.net");
+            fail(); //linkProfile() should fail
+        } catch (ProfileLinkException e) {
+            assertEquals(11235, e.id);
+            assertEquals("alexandera11235@aspenk12.net", e.email);
+
+            //exception expected, pass
+        }
+    }
+
     /**
-     * Creates example instances of Profile using test/resources/studenttest.csv
+     * Creates example instances of Profile using test/resources/application-test.csv
      */
     public static void makeExampleStudents(){
-        File file = new File(StudentTest.class.getResource("/studenttest.csv").getFile());
-        Student.createStudents(new CSV(file));
+        File file = new File(StudentTest.class.getResource("/application-test.csv").getFile());
+
+        try {
+            Student.createStudents(new CSV(file));
+        } catch (ProfileLinkException e) {
+            e.printStackTrace();
+        }
     }
 
 }

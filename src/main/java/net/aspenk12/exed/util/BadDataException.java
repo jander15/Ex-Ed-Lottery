@@ -32,9 +32,9 @@ public class BadDataException extends RuntimeException{
     private static String makeString(CSV csv, Integer row, Integer col, String data){
         String FilePath = csv.getFile().getPath();
 
-        String rowString = " Row:" + String.valueOf(row);
-        String colString = " Column:" + String.valueOf(col);
+        String rowString = " Row: " + row;
+        String colString = " Column: " + col;
 
-        return "A CSV contained data incompatible with the algorithm. File: " + FilePath + rowString + colString + "Bad Data: " + data;
+        return "A CSV contained data incompatible with the algorithm. File: " + FilePath + rowString + colString + " Bad Data: " + data;
     }
 }

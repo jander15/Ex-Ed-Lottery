@@ -13,8 +13,6 @@ import static net.aspenk12.exed.alg.containers.Grade.*;
 import static org.junit.Assert.*;
 
 public class AlgorithmTest {
-
-
     @Test
     public void testSimpleAlgorithm() {
 
@@ -82,7 +80,7 @@ public class AlgorithmTest {
 
         assertTrue(courseList.contains(andrew));
         assertTrue(courseList.contains(dyer));
-        assertTrue(courseList.contains(lexi)); //TODO issue is bc students don't 'retry' to get on the same list
+        assertTrue(courseList.contains(lexi));
 
         assertFalse(courseList.contains(lars));
         assertFalse(courseList.contains(tatum));
@@ -96,7 +94,7 @@ public class AlgorithmTest {
     }
 
     /**
-     * Create a simple student with only one pick and no previous courses
+     * Create a simple student with only one pick and no previous courses.
      */
     private Student createSimpleStudent(int id, String fn, String ln, Gender g, Grade gr, int pts, int lotto, Pick p){
         List<Course> empty = new ArrayList<>();

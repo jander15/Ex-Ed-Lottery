@@ -3,10 +3,7 @@ package net.aspenk12.exed.alg.members;
 import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
-import net.aspenk12.exed.util.BadDataException;
-import net.aspenk12.exed.util.CSV;
-import net.aspenk12.exed.util.Util;
-import net.aspenk12.exed.util.Warnings;
+import net.aspenk12.exed.util.*;
 
 import java.util.*;
 
@@ -107,8 +104,12 @@ public class Profile {
         }
     }
 
-    public static Profile get(int id){
+    public static Profile get(int id) {
         return profiles.get(id);
+    }
+
+    public static int count(){
+        return profiles.size();
     }
 
     public List<Course> getPreviousCourses(){

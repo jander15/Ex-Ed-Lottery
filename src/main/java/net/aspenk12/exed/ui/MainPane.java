@@ -7,6 +7,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -20,6 +21,8 @@ public abstract class MainPane extends StackPane {
 
     private static final Background disabledBackground;
     private static final Background enabledBackground;
+
+    protected Text statusText;
 
     //consider translating all this to css
     static {
@@ -49,7 +52,7 @@ public abstract class MainPane extends StackPane {
     //adds a bit of empty space to the very top of the vbox
     private final Region spacer = new Region();
 
-    protected MainPane(String title, String buttonText) {
+    protected MainPane(String title, String buttonText, String initialStatusMessage) {
         super();
 
         mainText = new MainText(title);
@@ -67,6 +70,14 @@ public abstract class MainPane extends StackPane {
 
         getChildren().add(vBox);
 
+        statusText = new Text(initialStatusMessage);
+        statusText.setFill(Color.RED);
+        statusText.setTextAlignment(TextAlignment.CENTER);
+        statusText.wrappingWidthProperty().bind(widthProperty());
+        statusText.setVisible(false);
+
+        vBox.getChildren().add(statusText);
+
         setActive(mainPanes.isEmpty());
 
         mainPanes.add(this);
@@ -79,6 +90,7 @@ public abstract class MainPane extends StackPane {
 
         if(active){
             setBackground(enabledBackground);
+            statusText.setVisible(true);
         } else {
             setBackground(disabledBackground);
         }
@@ -102,9 +114,13 @@ public abstract class MainPane extends StackPane {
     private void onClick(){
         run();
 
+        //progress to the next main pane
         currentActivePane++;
         setActive(false);
-        mainPanes.get(currentActivePane).setActive(true);
+
+        if(currentActivePane < mainPanes.size()){
+            mainPanes.get(currentActivePane).setActive(true);
+        }
     }
 
     /**

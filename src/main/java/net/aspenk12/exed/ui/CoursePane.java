@@ -10,16 +10,8 @@ import net.aspenk12.exed.util.CSV;
 import java.io.File;
 
 public class CoursePane extends MainPane {
-    private Text statusText = new Text("Status: Waiting for a CSV file");
-
     public CoursePane() {
-        super("Create the Ex Ed Courses","Attach Course Data");
-        statusText.setFill(Color.RED);
-
-        statusText.setTextAlignment(TextAlignment.CENTER);
-        statusText.wrappingWidthProperty().bind(widthProperty());
-
-        vBox.getChildren().add(statusText);
+        super("Create the Ex Ed Courses","Attach Course Data", "Status: Waiting for a CSV file");
     }
 
     @Override
@@ -27,7 +19,7 @@ public class CoursePane extends MainPane {
         CSV courseData = new CSV(openFileChooser());
         Course.createCourses(courseData);
 
-        statusText.setText("Status: Courses created from CSV. " + Course.courseCount() + " courses recognized.");
+        statusText.setText("Status: Courses created from CSV. " + Course.courseCount() + " courses recognized, with " + Course.findTotalSpots() + " total spots for students.");
         statusText.setFill(Color.GREEN);
     }
 }

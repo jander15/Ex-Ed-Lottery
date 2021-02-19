@@ -2,10 +2,7 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Pick;
-import net.aspenk12.exed.util.BadDataException;
-import net.aspenk12.exed.util.CSV;
-import net.aspenk12.exed.util.Util;
-import net.aspenk12.exed.util.Warnings;
+import net.aspenk12.exed.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +26,12 @@ public class Student {
 
     private static List<Student> students;
 
-    public static void createStudents(CSV csv){
+    /**
+     * When creating students, run through the application data, parse it, and
+     * attempt to pair each course application to a validated student profile via the id included in the student email
+     * @param csv Student Application CSV
+     */
+    public static void createStudents(CSV csv) throws ProfileLinkException{
         //only create students once, duh.
         if(students != null) return;
 
@@ -38,10 +40,8 @@ public class Student {
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
-            //todo address failure condition here
             String email = row[0];
-            int id = Util.getIDFromEmail(email);
-            Profile profile = Profile.get(id);
+            Profile profile = linkProfile(email);
 
             Application application = new Application(profile);
 
@@ -75,6 +75,15 @@ public class Student {
 
             students.add(new Student(profile, application));
         }
+    }
+
+    static Profile linkProfile(String email) throws ProfileLinkException{
+        int id = Util.getIDFromEmail(email);
+        Profile profile = Profile.get(id);
+
+        if(profile == null) {
+            throw new ProfileLinkException(email, id);
+        } else return profile;
     }
 
     public static List<Student> getStudents(){
