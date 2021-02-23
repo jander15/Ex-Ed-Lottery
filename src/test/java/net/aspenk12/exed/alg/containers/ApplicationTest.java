@@ -22,7 +22,7 @@ public class ApplicationTest {
 
         Profile profile = new Profile(11325, "Alex", "Appleby", Gender.MALE, Grade.SENIOR,30, 1, previousCourses);
 
-        Application application = new Application(profile);
+        Application application = new Application(profile, "johndoe@example.com");
         application.addNewPick(Course.get("SS"), 10); //course already attended
         application.addNewPick(Course.get("ZC"), 15);
         application.addNewPick(Course.get("WE"), 6);

@@ -43,7 +43,7 @@ public class Student {
             String email = row[0];
             Profile profile = linkProfile(email);
 
-            Application application = new Application(profile);
+            Application application = new Application(profile, email);
 
             //create an application for each student by reading in the application data
             //note the increment by 2, because the loop reads two values, course and bid, each cycle

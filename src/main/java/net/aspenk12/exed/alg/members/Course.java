@@ -2,9 +2,13 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
 import net.aspenk12.exed.util.Util;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.*;
 
@@ -135,6 +139,44 @@ public class Course {
     private void addStudent(Student s) {
         students.add(s);
         spotMap.takeSpot(s);
+    }
+
+    public Sheet writeSheet(Workbook workbook){
+        Sheet sheet = workbook.createSheet(courseId);
+
+        Row staticDataRow = sheet.createRow(0);
+        staticDataRow.createCell(0).setCellValue(courseId);
+        staticDataRow.createCell(1).setCellValue(courseName);
+        staticDataRow.createCell(2).setCellValue(teachers);
+
+        //leave row 1 empty for aesthetics and stuff
+        Row labelRow = sheet.createRow(2);
+        labelRow.createCell(0).setCellValue("Student ID");
+        labelRow.createCell(1).setCellValue("Email");
+        labelRow.createCell(2).setCellValue("First Name");
+        labelRow.createCell(3).setCellValue("Last Name");
+        labelRow.createCell(4).setCellValue("Gender");
+        labelRow.createCell(5).setCellValue("Grade");
+        labelRow.createCell(6).setCellValue("Bid");
+
+
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+
+            //note we start on the fourth row here
+            Row row = sheet.createRow(i + 3);
+            row.createCell(0).setCellValue(student.profile.id);
+            row.createCell(1).setCellValue(student.application.email);
+            row.createCell(2).setCellValue(student.profile.firstName);
+            row.createCell(3).setCellValue(student.profile.lastName);
+            row.createCell(4).setCellValue(student.profile.gender.name);
+            row.createCell(5).setCellValue(student.profile.grade.gradeNum);
+
+            Pick p = student.application.getPick(this);
+            row.createCell(6).setCellValue(p.bid);
+        }
+
+        return sheet;
     }
 
     /**

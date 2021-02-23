@@ -100,7 +100,7 @@ public class AlgorithmTest {
         List<Course> empty = new ArrayList<>();
         Profile profile = new Profile(id, fn, ln, g, gr, pts, lotto, empty);
 
-        Application application = new Application(profile);
+        Application application = new Application(profile, "johndoe@example.com");
         application.addNewPick(p.course, p.bid);
 
         return new Student(profile, application);

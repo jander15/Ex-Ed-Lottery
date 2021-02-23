@@ -12,14 +12,22 @@ public class Application {
     private List<Pick> picks = new ArrayList<>();
     private boolean validated = false;
 
+    /**
+     * The student's email is included in the application rather than the profile so it need not be maintained.
+     * Email data is pulled from the google form automatically.
+     */
+    public final String email;
+
     public static final int MAX_PICKS = 12;
     public static final int MIN_PICKS = 6;
 
     /**
      * @param profile The application needs a student profile to validate it's data.
+     * @param email
      */
-    public Application(Profile profile) {
+    public Application(Profile profile, String email) {
         this.profile = profile;
+        this.email = email;
     }
 
     /**
@@ -39,6 +47,19 @@ public class Application {
             Warnings.logWarning("Application was indexed before validation");
         }
         return picks.get(i);
+    }
+
+    /**
+     * Gets a pick of by course instead of index.
+     * @return null if there's no pick for this particular course.
+     */
+    public Pick getPick(Course course){
+        for (Pick pick : picks) {
+            if (pick.course.equals(course)) {
+                return pick;
+            }
+        }
+        return null;
     }
 
     public boolean isValidated() {

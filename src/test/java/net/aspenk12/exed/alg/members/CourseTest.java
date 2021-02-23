@@ -2,13 +2,22 @@ package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
-import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import static net.aspenk12.exed.alg.containers.Gender.*;
@@ -77,7 +86,7 @@ public class CourseTest {
         Course cataractCanyon = new Course("Cataract", "CC", "Various",  spotMap);
 
         Profile profile = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
-        Application app = new Application(profile);
+        Application app = new Application(profile, "johndoe@example.com");
         app.addNewPick(cataractCanyon, 1);
         Student stef = new Student(profile, app);
 
@@ -100,7 +109,7 @@ public class CourseTest {
         Course cataractCanyon = new Course("Cataract", "CC", "Various",  spotMap);
 
         Profile profile = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
-        Application app = new Application(profile);
+        Application app = new Application(profile, "johndoe@example.com");
         app.addNewPick(cataractCanyon, 1);
         Student stef = new Student(profile, app);
 
@@ -123,12 +132,12 @@ public class CourseTest {
         Course cataractCanyon = new Course("Cataract", "CC", "Various",  spotMap);
 
         Profile profileStef = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
-        Application appStef = new Application(profileStef);
+        Application appStef = new Application(profileStef, "johndoe@example.com");
         appStef.addNewPick(cataractCanyon, 1);
         Student stef = new Student(profileStef, appStef);
 
         Profile profileChloe = new Profile(11567, "Chloe", "Springfield", FEMALE, SENIOR, 14, 21, new ArrayList<>());
-        Application appChloe = new Application(profileChloe);
+        Application appChloe = new Application(profileChloe, "johndoe@example.com");
         appChloe.addNewPick(cataractCanyon, 5);
         Student chloe = new Student(profileChloe, appChloe);
 
@@ -143,6 +152,42 @@ public class CourseTest {
 
         assertEquals(cataractCanyon.spotMap.getMaxSpots(), 9);
         assertEquals(cataractCanyon.spotMap.get(SENIOR, FEMALE), 0);
+    }
+
+    @Test
+    @Ignore
+    public void testSheet(){
+        //writes a sheet.
+        Workbook workbook = new XSSFWorkbook();
+
+        makeExampleCourses();
+        ProfileTest.makeExampleProfiles();
+        StudentTest.makeExampleStudents();
+        Student s1 = Student.getStudents().get(0);
+        Student s2 = Student.getStudents().get(1);
+        Student s3 = Student.getStudents().get(2);
+
+        Course c = Course.get("SS");
+        c.placeStudent(s1);
+        c.placeStudent(s2);
+        c.placeStudent(s3);
+
+        c.writeSheet(workbook);
+
+        try {
+            Workbook actualWorkBook = new XSSFWorkbook(getClass().getResourceAsStream("/out/testsheet.xlsx"));
+
+            assertEquals(workbook, actualWorkBook);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream("/home/appleby/FTC/Code/Live/Ex-Ed-Lottery/src/test/resources/out/testsheet.xlsx");
+//            workbook.write(fileOutputStream);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
