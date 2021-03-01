@@ -17,6 +17,11 @@ public class ErrorAlert {
         throwErrorWindow(header, content, false);
     }
 
+    public static void throwErrorWindow(Throwable t){
+        throwErrorWindow("An error occurred at runtime.", t.getMessage());
+        t.printStackTrace();
+    }
+
     public static void throwErrorWindow(String header, String content, boolean closeOnExit){
         Alert error = new Alert(Alert.AlertType.ERROR);
         error.initOwner(MainWindow.getStage());

@@ -3,6 +3,7 @@ package net.aspenk12.exed.alg.members;
 import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
+import net.aspenk12.exed.ui.ErrorAlert;
 import net.aspenk12.exed.util.*;
 
 import java.util.*;
@@ -54,13 +55,23 @@ public class Profile {
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
-            String email = row[0];
-            String firstName = row[1];
-            String lastName = row[2];
-            String genderString = row[3];
-            String gradeString = row[4];
-            String pointString = row[5];
-            String lottoString = row[6];
+            String email, firstName, lastName, genderString, gradeString, pointString, lottoString;
+            try{
+                email = row[0];
+                firstName = row[1];
+                lastName = row[2];
+                genderString = row[3];
+                gradeString = row[4];
+                pointString = row[5];
+                lottoString = row[6];
+            } catch (ArrayIndexOutOfBoundsException e){
+                //todo maybe convert this to a BadDataException?
+                ErrorAlert.throwErrorWindow("Validated Student Data is missing.",
+                        "Check to make sure the validated student data is complete and correctly formatted." +
+                                " More info about this problem can be found in the printed stack trace.", true);
+                e.printStackTrace();
+                return;
+            }
 
             int id = Util.getIDFromEmail(email);
 
@@ -88,7 +99,15 @@ public class Profile {
 
             //loop through previous course cells
             for (int j = 7; j < 10; j++) {
-                String courseID = row[j];
+
+                String courseID;
+
+                try{
+                    courseID = row[j];
+                } catch (ArrayIndexOutOfBoundsException e){
+                    //if no previous course data exists, just skip out of this loop entirely.
+                    break;
+                }
 
                 //obviously don't try to add empty cells to previous courses
                 if(!courseID.equals("")){
