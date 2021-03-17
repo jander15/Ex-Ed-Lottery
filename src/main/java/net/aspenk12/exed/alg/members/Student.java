@@ -1,6 +1,8 @@
 package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.Application;
+import net.aspenk12.exed.alg.containers.Gender;
+import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.util.*;
 
@@ -94,8 +96,12 @@ public class Student {
      * Are these two students the same gender and grade?
      */
     public boolean sameDemographic(Student student){
-        boolean sameGender = student.profile.gender.equals(profile.gender);
-        boolean sameGrade = student.profile.grade.equals(profile.grade);
+        return isDemographic(student.profile.getGrade(), student.profile.getGender());
+    }
+
+    public boolean isDemographic(Grade grade, Gender gender){
+        boolean sameGender = gender.equals(profile.getGender());
+        boolean sameGrade = grade.equals(profile.getGrade());
 
         return sameGender && sameGrade;
     }
@@ -114,10 +120,16 @@ public class Student {
     }
 
 
-    //public for testing - ideally students should only be created in createStudents()
-    public Student(Profile profile, Application application) {
+    //protected for testing - ideally students should only be created internally in createStudents()
+    //use MockStudent
+    protected Student(Profile profile, Application application) {
         this.profile = profile;
         this.application = application;
+
+        //add this student as an applicant to all courses
+        for (int i = 0; i < application.pickCount(); i++) {
+            application.getPick(i).course.addApplicant(this);
+        }
 
         if (!application.isValidated()) {
             Warnings.logWarning("Created a student with unvalidated application data");

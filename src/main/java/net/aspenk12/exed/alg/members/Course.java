@@ -4,6 +4,7 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.alg.containers.SpotMap;
+import net.aspenk12.exed.alg.data.CourseData;
 import net.aspenk12.exed.util.CSV;
 import net.aspenk12.exed.util.Util;
 import org.apache.poi.ss.usermodel.Row;
@@ -24,7 +25,12 @@ public class Course {
     public final String teachers;
     public final SpotMap spotMap;
 
+    //todo consider making this a Set instead of a List
     private final List<Student> students =  new ArrayList<>();
+
+    //applicants is the set of students applying to a course, NOT the students that get in.
+    //this is really only used for calculating course data
+    private Set<Student> applicants = new HashSet<>();
 
     public Course(String courseName, String courseId, String teachers, SpotMap spotMap) {
         this.courseName = courseName;
@@ -90,12 +96,12 @@ public class Course {
      *
      * @return The outbid student in the case of a bidding war. Otherwise, this method returns null.
      */
-    /*Algorithm*/ Student placeStudent(Student student){
+    public Student placeStudent(Student student){
         Profile profile = student.profile;
 
         //students are demographically limited when there is space for them in the total course count,
         //but they are limited by demographic spots.
-        boolean demLimited = (spotMap.get(profile.grade, profile.gender) <= 0);
+        boolean demLimited = (spotMap.get(profile.getGrade(), profile.getGender()) <= 0);
 
         if(spotMap.getMaxSpots() > 0 && !demLimited){
             addStudent(student);
@@ -113,7 +119,7 @@ public class Course {
 
                 boolean largerBid = (bid > otherBid);
                 boolean equalBid = (bid == otherBid);
-                boolean largerLotto = (profile.lottoNumber > otherStudent.profile.lottoNumber);
+                boolean largerLotto = (profile.getLottoNumber() > otherStudent.profile.getLottoNumber());
 
                 if(largerBid || (equalBid && largerLotto)){
                     replaceStudent(student, otherStudent, i);
@@ -165,12 +171,12 @@ public class Course {
 
             //note we start on the fourth row here
             Row row = sheet.createRow(i + 3);
-            row.createCell(0).setCellValue(student.profile.id);
+            row.createCell(0).setCellValue(student.profile.getId());
             row.createCell(1).setCellValue(student.application.email);
-            row.createCell(2).setCellValue(student.profile.firstName);
-            row.createCell(3).setCellValue(student.profile.lastName);
-            row.createCell(4).setCellValue(student.profile.gender.name);
-            row.createCell(5).setCellValue(student.profile.grade.gradeNum);
+            row.createCell(2).setCellValue(student.profile.getFirstName());
+            row.createCell(3).setCellValue(student.profile.getLastName());
+            row.createCell(4).setCellValue(student.profile.getGender().name);
+            row.createCell(5).setCellValue(student.profile.getGrade().gradeNum);
 
             Pick p = student.application.getPick(this);
             row.createCell(6).setCellValue(p.bid);
@@ -205,9 +211,18 @@ public class Course {
         return total;
     }
 
-    public static Map<String, Course> getCourses(){
+    public void addApplicant(Student student){
+        applicants.add(student);
+    }
+
+    public Set<Student> getApplicants(){
+        return applicants;
+    }
+
+    public static Map<String, Course> getCourses() {
         return courses;
     }
+
 
     @Override
     public boolean equals(Object o) {

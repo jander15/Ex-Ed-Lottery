@@ -88,7 +88,7 @@ public class CourseTest {
         Profile profile = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
         Application app = new Application(profile, "johndoe@example.com");
         app.addNewPick(cataractCanyon, 1);
-        Student stef = new Student(profile, app);
+        Student stef = new MockStudent(profile, app);
 
         Student retVal = cataractCanyon.placeStudent(stef);
 
@@ -111,7 +111,7 @@ public class CourseTest {
         Profile profile = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
         Application app = new Application(profile, "johndoe@example.com");
         app.addNewPick(cataractCanyon, 1);
-        Student stef = new Student(profile, app);
+        Student stef = new MockStudent(profile, app);
 
         Student retVal = cataractCanyon.placeStudent(stef);
 
@@ -134,12 +134,12 @@ public class CourseTest {
         Profile profileStef = new Profile(11223, "Stef", "Wojick", FEMALE, SENIOR, 21, 66, new ArrayList<>());
         Application appStef = new Application(profileStef, "johndoe@example.com");
         appStef.addNewPick(cataractCanyon, 1);
-        Student stef = new Student(profileStef, appStef);
+        Student stef = new MockStudent(profileStef, appStef);
 
         Profile profileChloe = new Profile(11567, "Chloe", "Springfield", FEMALE, SENIOR, 14, 21, new ArrayList<>());
         Application appChloe = new Application(profileChloe, "johndoe@example.com");
         appChloe.addNewPick(cataractCanyon, 5);
-        Student chloe = new Student(profileChloe, appChloe);
+        Student chloe = new MockStudent(profileChloe, appChloe);
 
         Student retVal1 = cataractCanyon.placeStudent(stef);
         assertNull(retVal1);

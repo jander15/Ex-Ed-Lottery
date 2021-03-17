@@ -1,7 +1,5 @@
 package net.aspenk12.exed.alg.containers;
 
-import net.aspenk12.exed.alg.containers.Gender;
-import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.members.Student;
 
 import java.util.HashMap;
@@ -44,9 +42,9 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
 
         //set the previous integer to the same number - 1
         //yeah, this is pretty gross
-        int prev = get(student.profile.grade, student.profile.gender);
+        int prev = get(student.profile.getGrade(), student.profile.getGender());
 
-        put(student.profile.grade, student.profile.gender, prev - 1);
+        put(student.profile.getGrade(), student.profile.getGender(), prev - 1);
     }
 
     public void addSpot(Student student){
@@ -54,8 +52,8 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
 
         //set the previous integer to the same number + 1
         //one could factor out the shared code between this and takeSpot() if they pleased.
-        int prev = get(student.profile.grade, student.profile.gender);
+        int prev = get(student.profile.getGrade(), student.profile.getGender());
 
-        put(student.profile.grade, student.profile.gender, prev + 1);
+        put(student.profile.getGrade(), student.profile.getGender(), prev + 1);
     }
 }

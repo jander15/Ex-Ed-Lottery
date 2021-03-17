@@ -1,6 +1,5 @@
 package net.aspenk12.exed.alg.members;
 
-import net.aspenk12.exed.alg.containers.Application;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.ui.ErrorAlert;
@@ -12,12 +11,13 @@ import java.util.*;
  * A (Student) Profile contains 'validated' data about a student. It comprises of data specified in the validated CSV.
  */
 public class Profile {
-    public final int id;
-    public final String firstName, lastName;
-    public final Gender gender;
-    public final Grade grade;
-    public final int points;
-    public final int lottoNumber;
+    protected int id;
+    protected String firstName;
+    protected String lastName;
+    protected Gender gender;
+    protected Grade grade;
+    protected int points;
+    protected int lottoNumber;
 
     private final List<Course> previousCourses;
 
@@ -136,7 +136,34 @@ public class Profile {
     }
 
     public String getFullName(){
-        return firstName + " " + lastName;
+        return getFirstName() + " " + getLastName();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public int getLottoNumber() {
+        return lottoNumber;
+    }
 }

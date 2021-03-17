@@ -26,12 +26,12 @@ public class StudentTest {
         //test alex's data because why not ig
         Student alex = students.get(0);
 
-        assertEquals(alex.profile.firstName, "Alex");
-        assertEquals(alex.profile.lastName, "Appleby" );
-        assertEquals(alex.profile.id, 11325);
-        assertEquals(alex.profile.gender, Gender.MALE);
-        assertEquals(alex.profile.points, 5);
-        assertEquals(alex.profile.grade, Grade.SENIOR);
+        assertEquals(alex.profile.getFirstName(), "Alex");
+        assertEquals(alex.profile.getLastName(), "Appleby" );
+        assertEquals(alex.profile.getId(), 11325);
+        assertEquals(alex.profile.getGender(), Gender.MALE);
+        assertEquals(alex.profile.getPoints(), 5);
+        assertEquals(alex.profile.getGrade(), Grade.SENIOR);
 
         Pick firstPick = alex.application.getPick(0);
 

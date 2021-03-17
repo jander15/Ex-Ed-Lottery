@@ -89,8 +89,8 @@ public class Application {
         List<Pick> copy = new ArrayList<>();
 
         for (Pick pick : picks) {
-            if (pick.bid > profile.points){
-                pick.bid = profile.points;
+            if (pick.bid > profile.getPoints()){
+                pick.bid = profile.getPoints();
                 Warnings.logWarning("Student " + profile.getFullName() + " wagered more points than they had.");
             }
             if (pick.bid < 0){
