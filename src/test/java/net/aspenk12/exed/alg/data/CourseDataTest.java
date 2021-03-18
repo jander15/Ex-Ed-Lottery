@@ -97,6 +97,42 @@ public class CourseDataTest {
     }
 
     @Test
+    public void testAcdi() {
+        Course course = new Course("Kataract Kanyon", "KK", "Joe Mama", null);
+        Course otherCourse = new Course("other", "OT", "Jim Nasium", null);
+
+        //make some mock students and stuff
+        MockApplication ma1 = new MockApplication(otherCourse, 69);
+        //second pick
+        ma1.addNewPick(course, 30);
+        Student s1 = new MockStudent(ma1);
+
+        //first pick
+        Student s2 = new MockStudent(new MockApplication(course, 0));
+
+        MockApplication ma2 = new MockApplication(otherCourse, 69);
+
+        //twelth pick
+        for (int i = 0; i < 10; i++) {
+            ma2.addNewPick(otherCourse, -420);
+        }
+
+        ma2.addNewPick(course, 1);
+        Student s3 = new MockStudent(ma2);
+
+        course.addApplicant(s1);
+        course.addApplicant(s2);
+        course.addApplicant(s3);
+
+        CourseData courseData = new CourseData(course);
+
+        courseData.calcAcdi();
+
+        //first pick = 6 acdi; second pick = 4 acdi; 12th pick = 1 acdi; = 11 acdi in total, divided by number of students (3)
+        assertEquals(11.0 / 3.0, courseData.getAcdi(), 0.00000001);
+    }
+
+    @Test
     public void testFindMinBid(){
         Course course = new Course("someCourse", "SC", null, null);
         MockStudent s4 = new MockStudent(new MockApplication(course, 4));

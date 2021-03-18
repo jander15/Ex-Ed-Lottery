@@ -26,7 +26,7 @@ public class Student {
     //tracks which picks the student has 'tried to get on' in the algorithm
     /*Algorithm*/ Pick currentPick;
 
-    private static List<Student> students;
+    private static List<Student> students = new ArrayList<>();
 
     /**
      * When creating students, run through the application data, parse it, and
@@ -35,9 +35,7 @@ public class Student {
      */
     public static void createStudents(CSV csv) throws ProfileLinkException{
         //only create students once, duh.
-        if(students != null) return;
-
-        students = new ArrayList<>();
+        if(!students.isEmpty()) return;
 
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
@@ -74,8 +72,6 @@ public class Student {
             }
 
             application.validate();
-
-            students.add(new Student(profile, application));
         }
     }
 
@@ -136,5 +132,7 @@ public class Student {
         }
 
         currentPick = application.getPick(0);
+
+        students.add(this);
     }
 }

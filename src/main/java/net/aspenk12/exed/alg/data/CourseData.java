@@ -10,6 +10,8 @@ import java.util.*;
 
 /**
  * Crunches all the numbers calculated on a course-by-course basis.
+ *
+ * @author Alex Appleby
  */
 public class CourseData {
     private final Course course;
@@ -19,6 +21,11 @@ public class CourseData {
 
     //average bid of students that ended up on the course
     private double avgPointExpenditure;
+
+    //adjusted course demand index, course demand independent of size of trip, point bids, selectivity, etc.
+    //this is only based on the order of picks, and does not take bid size or expenditure into account.
+    //note that this metric is somewhat flawed, and can still be skewed by course value.
+    private double acdi;
 
     //contains minimum bid per demographic for every trip
     private Map<Grade, Map<Gender, Integer>> demographicExpenditureMap = new HashMap<>();
@@ -31,6 +38,7 @@ public class CourseData {
         calcAvgBid();
         calcAvgExpenditure();
         calcDemographicExpenditure();
+        calcAcdi();
     }
 
     /*test*/ void calcAvgBid(){
@@ -97,6 +105,25 @@ public class CourseData {
         }
     }
 
+    /**
+     * @see ACDI
+     */
+    /*test*/ void calcAcdi(){
+        Set<Student> applicants = course.getApplicants();
+
+        int acdiSum = 0;
+
+        for (Student s : applicants) {
+            //index is the 'order' of this particular pick. 0 = 1st, 1 = 2nd, etc. etc.
+            int index = s.application.getPick(course).index;
+            acdiSum += ACDI.weigh(index);
+        }
+
+        //Normalize the ACDI by the amount of students in the applicant pool.
+        //This allows ACDI readings to be compared year-to-year.
+        acdi = acdiSum / (double) Student.getStudents().size();
+    }
+
     /*test*/ static int findMinBid(Set<Student> students, Course course){
         if(students.isEmpty()){
             throw new UnsupportedOperationException("Tried to find the minimum bid of an empty set of students");
@@ -116,4 +143,7 @@ public class CourseData {
         return demographicExpenditureMap;
     }
 
+    public double getAcdi() {
+        return acdi;
+    }
 }
