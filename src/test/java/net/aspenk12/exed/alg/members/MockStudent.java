@@ -13,7 +13,7 @@ public class MockStudent extends Student{
         super(new MockProfile(), mockApplication);
     }
 
-    public MockProfile getProfile(){
+    public MockProfile getMockProfile(){
         return (MockProfile) profile;
     }
 }

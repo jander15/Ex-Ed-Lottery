@@ -2,7 +2,6 @@ package net.aspenk12.exed.alg.data;
 
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
-import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.Student;
 
@@ -27,6 +26,14 @@ public class CourseData {
     //note that this metric is somewhat flawed, and can still be skewed by course value.
     private double acdi;
 
+    //between 0 and 1;
+    private double percentMale, percentFemale;
+
+    //applicant map is for all applicants, student for students on the trip only.
+    private Map<Grade, Double> applicantGradeMap;
+    private Map<Grade, Double> studentGradeMap;
+
+
     //contains minimum bid per demographic for every trip
     private Map<Grade, Map<Gender, Integer>> demographicExpenditureMap = new HashMap<>();
 
@@ -39,6 +46,9 @@ public class CourseData {
         calcAvgExpenditure();
         calcDemographicExpenditure();
         calcAcdi();
+        calcGenderDist();
+        applicantGradeMap = calcGradeDist(course.getApplicants());
+        studentGradeMap = calcGradeDist(new HashSet<>(course.getStudents()));
     }
 
     /*test*/ void calcAvgBid(){
@@ -124,6 +134,52 @@ public class CourseData {
         acdi = acdiSum / (double) Student.getStudents().size();
     }
 
+    /*test*/ void calcGenderDist(){
+        int totalMales = 0, totalFemales = 0;
+
+        for (Student s : course.getStudents()) {
+            if(s.profile.getGender().equals(Gender.MALE)){
+                totalMales++;
+            } else {
+                totalFemales++;
+            }
+        }
+
+        double size = course.getStudents().size();
+        percentMale = totalMales / size;
+        percentFemale = totalFemales / size;
+    }
+
+    /**
+     * returns a distribution of grade values from a set of students.
+     * @return Maps grade value to percentage of student set. Percentage is double, value 0 to 1.
+     */
+    /*test*/ static Map<Grade, Double> calcGradeDist(Set<Student> students){
+        Map<Grade, Integer> totalPerGrade = new HashMap<>();
+        //initiate all values at 0;
+        for (Grade g : Grade.values()) {
+            totalPerGrade.put(g, 0);
+        }
+
+        for (Student student : students) {
+            //increase by 1
+            int total = totalPerGrade.get(student.profile.getGrade());
+            totalPerGrade.put(student.profile.getGrade(), total + 1);
+        }
+
+        Map<Grade, Double> retVal = new HashMap<>();
+
+        for (Grade g : Grade.values()) {
+            int total = totalPerGrade.get(g);
+
+            retVal.put(g, total / (double) students.size());
+        }
+
+        return retVal;
+    }
+
+
+
     /*test*/ static int findMinBid(Set<Student> students, Course course){
         if(students.isEmpty()){
             throw new UnsupportedOperationException("Tried to find the minimum bid of an empty set of students");
@@ -145,5 +201,13 @@ public class CourseData {
 
     public double getAcdi() {
         return acdi;
+    }
+
+    public double getPercentMale() {
+        return percentMale;
+    }
+
+    public double getPercentFemale() {
+        return percentFemale;
     }
 }

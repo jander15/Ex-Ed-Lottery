@@ -10,6 +10,7 @@ import net.aspenk12.exed.alg.members.Student;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -33,8 +34,8 @@ public class CourseDataTest {
 
         //note bid = 5
         MockStudent mockStudent = new MockStudent(new MockApplication(course, 5));
-        mockStudent.getProfile().setGrade(Grade.SENIOR);
-        mockStudent.getProfile().setGender(Gender.MALE);
+        mockStudent.getMockProfile().setGrade(Grade.SENIOR);
+        mockStudent.getMockProfile().setGender(Gender.MALE);
 
         course.placeStudent(mockStudent);
         CourseData courseData = new CourseData(course);
@@ -73,8 +74,8 @@ public class CourseDataTest {
         MockStudent mockStudent = new MockStudent(new MockApplication(course, 5));
 
         //note grade and gender
-        mockStudent.getProfile().setGrade(Grade.SOPHOMORE);
-        mockStudent.getProfile().setGender(Gender.FEMALE);
+        mockStudent.getMockProfile().setGrade(Grade.SOPHOMORE);
+        mockStudent.getMockProfile().setGender(Gender.FEMALE);
 
         course.placeStudent(mockStudent);
 
@@ -112,7 +113,7 @@ public class CourseDataTest {
 
         MockApplication ma2 = new MockApplication(otherCourse, 69);
 
-        //twelth pick
+        //twelfth pick
         for (int i = 0; i < 10; i++) {
             ma2.addNewPick(otherCourse, -420);
         }
@@ -130,6 +131,80 @@ public class CourseDataTest {
 
         //first pick = 6 acdi; second pick = 4 acdi; 12th pick = 1 acdi; = 11 acdi in total, divided by number of students (3)
         assertEquals(11.0 / 3.0, courseData.getAcdi(), 0.00000001);
+    }
+
+    @Test
+    public void testGenderDistribution() {
+        SpotMap spotMap = new SpotMap(100);
+        spotMap.put(Grade.SENIOR, Gender.MALE, 100);
+        spotMap.put(Grade.SENIOR, Gender.FEMALE, 100);
+        spotMap.put(Grade.JUNIOR, Gender.MALE, 100);
+        spotMap.put(Grade.JUNIOR, Gender.FEMALE, 100);
+        spotMap.put(Grade.SOPHOMORE, Gender.MALE, 100);
+        spotMap.put(Grade.SOPHOMORE, Gender.FEMALE, 100);
+        spotMap.put(Grade.FRESHMAN, Gender.MALE, 100);
+        spotMap.put(Grade.FRESHMAN, Gender.FEMALE, 100);
+
+        Course course = new Course("someCourse", "SC", "jander", spotMap);
+
+        MockStudent s1 = new MockStudent(new MockApplication(course,0));
+        s1.getMockProfile().setGender(Gender.MALE);
+        s1.getMockProfile().setGrade(Grade.FRESHMAN);
+
+
+        MockStudent s2 = new MockStudent(new MockApplication(course,0));
+        s2.getMockProfile().setGender(Gender.MALE);
+        s2.getMockProfile().setGrade(Grade.JUNIOR);
+
+        MockStudent s3 = new MockStudent(new MockApplication(course,0));
+        s3.getMockProfile().setGender(Gender.FEMALE);
+        s3.getMockProfile().setGrade(Grade.SOPHOMORE);
+
+        course.placeStudent(s1);
+        course.placeStudent(s2);
+        course.placeStudent(s3);
+
+        CourseData courseData = new CourseData(course);
+        courseData.calcGenderDist();
+
+        assertEquals(1.0, courseData.getPercentFemale() + courseData.getPercentMale(), 0.0000001);
+        assertEquals(0.333333333, courseData.getPercentFemale(), 0.0001); //2 boys 1 girl on trip
+        assertEquals(0.666666666, courseData.getPercentMale(), 0.0001);
+    }
+
+    @Test
+    public void testGradeDistribution() {
+        Set<Student> students = new HashSet<>();
+
+        MockStudent s1 = new MockStudent(null);
+        s1.getMockProfile().setGrade(Grade.SENIOR);
+
+        MockStudent s2 = new MockStudent(null);
+        s2.getMockProfile().setGrade(Grade.SENIOR);
+
+        MockStudent s3 = new MockStudent(null);
+        s3.getMockProfile().setGrade(Grade.SOPHOMORE);
+
+        MockStudent s4 = new MockStudent(null);
+        s4.getMockProfile().setGrade(Grade.FRESHMAN);
+
+        students.add(s1);
+        students.add(s2);
+        students.add(s3);
+        students.add(s4);
+
+        Map<Grade, Double> dist = CourseData.calcGradeDist(students);
+
+        double sum = 0.0;
+        for (Grade g : Grade.values()) {
+            sum += dist.get(g);
+        }
+        assertEquals(1, sum, 0.0000001);
+
+        assertEquals(.5, dist.get(Grade.SENIOR), 0.0);
+        assertEquals(0.0, dist.get(Grade.JUNIOR), 0.0);
+        assertEquals(.25, dist.get(Grade.SOPHOMORE), 0.0);
+        assertEquals(.25, dist.get(Grade.FRESHMAN), 0.0);
     }
 
     @Test

@@ -122,16 +122,21 @@ public class Student {
         this.profile = profile;
         this.application = application;
 
-        //add this student as an applicant to all courses
-        for (int i = 0; i < application.pickCount(); i++) {
-            application.getPick(i).course.addApplicant(this);
-        }
+        try{
+            //add this student as an applicant to all courses
+            for (int i = 0; i < application.pickCount(); i++) {
+                application.getPick(i).course.addApplicant(this);
+            }
 
-        if (!application.isValidated()) {
-            Warnings.logWarning("Created a student with unvalidated application data");
-        }
+            if (!application.isValidated()) {
+                Warnings.logWarning("Created a student with unvalidated application data");
+            }
 
-        currentPick = application.getPick(0);
+            currentPick = application.getPick(0);
+        } catch (NullPointerException e){
+            //catch null pointer when mock students are used
+            Warnings.logWarning(e.getMessage());
+        }
 
         students.add(this);
     }
