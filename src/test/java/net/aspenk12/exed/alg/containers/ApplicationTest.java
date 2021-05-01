@@ -3,11 +3,11 @@ package net.aspenk12.exed.alg.containers;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.CourseTest;
 import net.aspenk12.exed.alg.members.Profile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
 
@@ -33,6 +33,9 @@ public class ApplicationTest {
 
         application.validate();
 
+        //trip should be removed because of duplicate courses
+        assertNull(application.getPick(Course.get("SS")));
+
         assertEquals(Course.get("ZC"), application.getPick(0).course);
         assertEquals(15, application.getPick(0).bid);
 
@@ -44,5 +47,7 @@ public class ApplicationTest {
 
         assertEquals(Course.get("ET"), application.getPick(4).course);
         assertEquals(30, application.getPick(4).bid);
+
+        assertEquals(6, application.getPick(Course.get("WE")).bid);
     }
 }

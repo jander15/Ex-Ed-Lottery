@@ -72,6 +72,8 @@ public class Student {
             }
 
             application.validate();
+
+            new Student(profile, application);
         }
     }
 
@@ -111,6 +113,8 @@ public class Student {
             //the current pick is the last pick
             return true;
         }
+
+        System.out.println(application.email);
         currentPick = application.getPick(currentPick.index + 1);
         return false;
     }

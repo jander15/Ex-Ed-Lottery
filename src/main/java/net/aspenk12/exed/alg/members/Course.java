@@ -4,7 +4,6 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.Pick;
 import net.aspenk12.exed.alg.containers.SpotMap;
-import net.aspenk12.exed.alg.data.CourseData;
 import net.aspenk12.exed.util.CSV;
 import net.aspenk12.exed.util.Util;
 import org.apache.poi.ss.usermodel.Row;
@@ -103,7 +102,7 @@ public class Course {
         //but they are limited by demographic spots.
         boolean demLimited = (spotMap.get(profile.getGrade(), profile.getGender()) <= 0);
 
-        if(spotMap.getMaxSpots() > 0 && !demLimited){
+        if(spotMap.getRemainingSpots() > 0 && !demLimited){
             addStudent(student);
             return null;
         }
@@ -206,7 +205,7 @@ public class Course {
     public static int findTotalSpots(){
         int total = 0;
         for (Course c : courses.values()) {
-            total += c.spotMap.getMaxSpots();
+            total += c.spotMap.getRemainingSpots();
         }
         return total;
     }

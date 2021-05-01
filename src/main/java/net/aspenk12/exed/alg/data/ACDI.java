@@ -16,6 +16,7 @@ public class ACDI {
      * Gets a proper weight for a particular course index.
      * @param i, the index of the course in a student's list of bids (from 0 - 11) corresponding to 1st - 12th picks.
      * @return the ACDI value on a weighed scale.
+     * @throws Error if attempt is made to weigh an invalid ACDI pick
      *
      * Graph / Spreadsheet of weights:
      * https://docs.google.com/spreadsheets/d/1RWVjrQlFMbxiu4orwcunpkta7loNvO6UbedTHAlONU8/edit?usp=sharing

@@ -5,27 +5,18 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.util.CSV;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import static net.aspenk12.exed.alg.containers.Gender.*;
 import static net.aspenk12.exed.alg.containers.Grade.*;
-
-
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CourseTest {
     @Test
@@ -53,7 +44,7 @@ public class CourseTest {
         assertEquals(spotMap.get(JUNIOR, MALE), 8);
         assertEquals(spotMap.get(JUNIOR, FEMALE), 9);
 
-        assertEquals(spotMap.getMaxSpots(), 10);
+        assertEquals(spotMap.getRemainingSpots(), 10);
     }
 
     @Test
@@ -75,7 +66,7 @@ public class CourseTest {
             assertEquals(subMap.get(FEMALE).intValue(), 2);
         }
 
-        assertEquals(10, spotMap.getMaxSpots());
+        assertEquals(10, spotMap.getRemainingSpots());
     }
 
     @Test
@@ -95,7 +86,7 @@ public class CourseTest {
         assertNull(retVal);
 
         assertTrue(cataractCanyon.getStudents().contains(stef));
-        assertEquals(cataractCanyon.spotMap.getMaxSpots(), 9);
+        assertEquals(cataractCanyon.spotMap.getRemainingSpots(), 9);
         assertEquals(cataractCanyon.spotMap.get(SENIOR, FEMALE), 4);
     }
 
@@ -117,7 +108,7 @@ public class CourseTest {
 
         assertFalse(cataractCanyon.getStudents().contains(stef));
         assertEquals(retVal, stef);
-        assertEquals(cataractCanyon.spotMap.getMaxSpots(), 0);
+        assertEquals(cataractCanyon.spotMap.getRemainingSpots(), 0);
         assertEquals(cataractCanyon.spotMap.get(SENIOR, FEMALE), 5);
     }
 
@@ -150,12 +141,11 @@ public class CourseTest {
         assertFalse(cataractCanyon.getStudents().contains(stef));
         assertTrue(cataractCanyon.getStudents().contains(chloe));
 
-        assertEquals(cataractCanyon.spotMap.getMaxSpots(), 9);
+        assertEquals(cataractCanyon.spotMap.getRemainingSpots(), 9);
         assertEquals(cataractCanyon.spotMap.get(SENIOR, FEMALE), 0);
     }
 
     @Test
-    @Ignore
     public void testSheet(){
         //writes a sheet.
         Workbook workbook = new XSSFWorkbook();

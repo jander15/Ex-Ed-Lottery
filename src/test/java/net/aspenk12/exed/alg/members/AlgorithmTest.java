@@ -1,7 +1,7 @@
 package net.aspenk12.exed.alg.members;
 
 import net.aspenk12.exed.alg.containers.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static net.aspenk12.exed.alg.containers.Gender.*;
 import static net.aspenk12.exed.alg.containers.Grade.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AlgorithmTest {
     @Test
@@ -74,7 +74,7 @@ public class AlgorithmTest {
         alg.run();
 
         //course should be full
-        assertEquals(0, blackHills.spotMap.getMaxSpots());
+        assertEquals(0, blackHills.spotMap.getRemainingSpots());
 
         List<Student> courseList = blackHills.getStudents();
 

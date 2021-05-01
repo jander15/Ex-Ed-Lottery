@@ -8,10 +8,12 @@ import java.util.HashMap;
  * Custom double-hashmap specifically for managing spots on a trip
  */
 public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
-    private int maxSpots;
+    private int remainingSpots;
+    public final int maxSpots;
 
     public SpotMap(int maxSpots) {
         this.maxSpots = maxSpots;
+        remainingSpots = maxSpots;
     }
 
     public void put(Grade grade, Gender gender, int spots) {
@@ -29,8 +31,8 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
         return get(grade).get(gender);
     }
 
-    public int getMaxSpots(){
-        return maxSpots;
+    public int getRemainingSpots(){
+        return remainingSpots;
     }
 
     /**
@@ -38,7 +40,7 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
      * @param student
      */
     public void takeSpot(Student student){
-        maxSpots--;
+        remainingSpots--;
 
         //set the previous integer to the same number - 1
         //yeah, this is pretty gross
@@ -48,7 +50,7 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
     }
 
     public void addSpot(Student student){
-        maxSpots++;
+        remainingSpots++;
 
         //set the previous integer to the same number + 1
         //one could factor out the shared code between this and takeSpot() if they pleased.

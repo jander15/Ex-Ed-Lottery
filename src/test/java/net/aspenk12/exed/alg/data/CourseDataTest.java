@@ -1,5 +1,9 @@
 package net.aspenk12.exed.alg.data;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.stage.Stage;
 import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.containers.MockApplication;
@@ -7,13 +11,21 @@ import net.aspenk12.exed.alg.containers.SpotMap;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.MockStudent;
 import net.aspenk12.exed.alg.members.Student;
-import org.junit.Test;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import org.junit.jupiter.api.Test;
+
+import javax.swing.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CourseDataTest {
 
@@ -134,7 +146,7 @@ public class CourseDataTest {
     }
 
     @Test
-    public void testGenderDistribution() {
+    public CourseData testGenderDistribution() {
         SpotMap spotMap = new SpotMap(100);
         spotMap.put(Grade.SENIOR, Gender.MALE, 100);
         spotMap.put(Grade.SENIOR, Gender.FEMALE, 100);
@@ -170,6 +182,8 @@ public class CourseDataTest {
         assertEquals(1.0, courseData.getPercentFemale() + courseData.getPercentMale(), 0.0000001);
         assertEquals(0.333333333, courseData.getPercentFemale(), 0.0001); //2 boys 1 girl on trip
         assertEquals(0.666666666, courseData.getPercentMale(), 0.0001);
+
+        return courseData;
     }
 
     @Test
@@ -225,4 +239,46 @@ public class CourseDataTest {
 
         assertEquals(1, min);
     }
+
+    @Test
+    public void testPDF() throws IOException {
+        SpotMap spotMap = new SpotMap(100);
+        spotMap.put(Grade.SENIOR, Gender.MALE, 100);
+        spotMap.put(Grade.SENIOR, Gender.FEMALE, 100);
+        spotMap.put(Grade.JUNIOR, Gender.MALE, 100);
+        spotMap.put(Grade.JUNIOR, Gender.FEMALE, 100);
+        spotMap.put(Grade.SOPHOMORE, Gender.MALE, 100);
+        spotMap.put(Grade.SOPHOMORE, Gender.FEMALE, 100);
+        spotMap.put(Grade.FRESHMAN, Gender.MALE, 100);
+        spotMap.put(Grade.FRESHMAN, Gender.FEMALE, 100);
+
+        Course course = new Course("Soul Surfers", "SS", "jander", spotMap);
+
+        MockStudent s1 = new MockStudent(new MockApplication(course,0));
+        s1.getMockProfile().setGender(Gender.MALE);
+        s1.getMockProfile().setGrade(Grade.FRESHMAN);
+
+
+        MockStudent s2 = new MockStudent(new MockApplication(course,0));
+        s2.getMockProfile().setGender(Gender.MALE);
+        s2.getMockProfile().setGrade(Grade.JUNIOR);
+
+        MockStudent s3 = new MockStudent(new MockApplication(course,0));
+        s3.getMockProfile().setGender(Gender.FEMALE);
+        s3.getMockProfile().setGrade(Grade.SOPHOMORE);
+
+        course.placeStudent(s1);
+        course.placeStudent(s2);
+        course.placeStudent(s3);
+
+        CourseData courseData = new CourseData(course);
+        courseData.calculateAll();
+
+        PDDocument doc = new PDDocument();
+        PDPage page = courseData.createPage(doc);
+
+        doc.addPage(page);
+        doc.save("/home/appleby/Desktop/out.pdf");
+    }
+
 }

@@ -110,6 +110,7 @@ public class Application {
 
             //is there a way to continue inside of the nested loop?
             if(alreadyAttended){
+                //by calling continue, we aren't adding this course to the copy.
                 continue;
             }
 

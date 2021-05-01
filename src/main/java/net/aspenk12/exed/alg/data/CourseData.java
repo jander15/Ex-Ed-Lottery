@@ -4,8 +4,22 @@ import net.aspenk12.exed.alg.containers.Gender;
 import net.aspenk12.exed.alg.containers.Grade;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.Student;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Crunches all the numbers calculated on a course-by-course basis.
@@ -29,6 +43,8 @@ public class CourseData {
     //between 0 and 1;
     private double percentMale, percentFemale;
 
+    private double percentFull;
+
     //applicant map is for all applicants, student for students on the trip only.
     private Map<Grade, Double> applicantGradeMap;
     private Map<Grade, Double> studentGradeMap;
@@ -49,6 +65,7 @@ public class CourseData {
         calcGenderDist();
         applicantGradeMap = calcGradeDist(course.getApplicants());
         studentGradeMap = calcGradeDist(new HashSet<>(course.getStudents()));
+        calcPercentFull();
     }
 
     /*test*/ void calcAvgBid(){
@@ -63,11 +80,9 @@ public class CourseData {
     }
 
     /*test*/ void calcAvgExpenditure(){
-        Set<Student> applicants = course.getApplicants();
-
         int memberSum = 0;
         List<Student> members = course.getStudents();
-        for (Student s : applicants) {
+        for (Student s : members) {
             memberSum += s.application.getPick(course).bid;
         }
 
@@ -79,7 +94,7 @@ public class CourseData {
             //submap in demographicExpenditureMap, maps gender to minimum point expenditure.
             Map<Gender, Integer> map = new HashMap<>();
             for (Gender gender : Gender.values()) {
-                boolean full = (course.spotMap.getMaxSpots() == 0);
+                boolean full = (course.spotMap.getRemainingSpots() == 0);
                 boolean demographicFull = (course.spotMap.get(grade, gender) == 0);
 
                 if(!full && !demographicFull){
@@ -119,13 +134,19 @@ public class CourseData {
      * @see ACDI
      */
     /*test*/ void calcAcdi(){
+
+        //Get the set of all students applying to the course we're analyzing.
+        //Note the unordered nature of this collection.
         Set<Student> applicants = course.getApplicants();
 
+        //Initialize an integer to contain the sum of all ACDI values
         int acdiSum = 0;
 
+        //loop through every student applying to this course
         for (Student s : applicants) {
             //index is the 'order' of this particular pick. 0 = 1st, 1 = 2nd, etc. etc.
             int index = s.application.getPick(course).index;
+            //refer to the ACDI class to get proper weighting, then add it to the sum
             acdiSum += ACDI.weigh(index);
         }
 
@@ -148,6 +169,10 @@ public class CourseData {
         double size = course.getStudents().size();
         percentMale = totalMales / size;
         percentFemale = totalFemales / size;
+    }
+
+    /*test*/ void calcPercentFull(){
+        percentFull = course.getStudents().size() / (double) course.spotMap.maxSpots;
     }
 
     /**
@@ -210,4 +235,133 @@ public class CourseData {
     public double getPercentFemale() {
         return percentFemale;
     }
+
+    private BufferedImage makeGenderPieChart(){
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        dataset.setValue("% Male", percentMale);
+        dataset.setValue("% Female", percentFemale);
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Gender Distribution",   // chart title
+                dataset,          // data
+                true,             // include legend
+                false,
+                false);
+
+        PiePlot<String> piePlot = (PiePlot<String>)chart.getPlot();
+        piePlot.setSectionPaint("% Male", Color.BLUE);
+        piePlot.setSectionPaint("% Female", Color.PINK);
+        piePlot.setBackgroundAlpha(0);
+        piePlot.setOutlineVisible(false);
+
+        return chart.createBufferedImage(250, 200);
+    }
+
+    private BufferedImage makeGradePieChart(){
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        dataset.setValue("% 9th", applicantGradeMap.get(Grade.FRESHMAN));
+        dataset.setValue("% 10th", applicantGradeMap.get(Grade.SOPHOMORE));
+        dataset.setValue("% 11th", applicantGradeMap.get(Grade.JUNIOR));
+        dataset.setValue("% 12th", applicantGradeMap.get(Grade.SENIOR));
+
+
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Grade Distribution",   // chart title
+                dataset,          // data
+                true,             // include legend
+                false,
+                false);
+
+        PiePlot<String> piePlot = (PiePlot<String>)chart.getPlot();
+        piePlot.setBackgroundAlpha(0);
+        piePlot.setOutlineVisible(false);
+
+        return chart.createBufferedImage(250, 200);
+    }
+
+    /**
+     * @return the PDF page for this specific course
+     */
+    public PDPage createPage(PDDocument doc) throws IOException {
+        //instantiate a new blank PDF Page
+        PDPage page = new PDPage();
+        //instantiate a new contentStream to write content to the page,
+        PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+
+        //begin writing text
+        contentStream.beginText();
+        //set the font and font size
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18);
+        //create a new line
+        contentStream.newLineAtOffset(25, 730);
+        //write the course name and ID at the top of the page.
+        contentStream.showText(course.courseName + " <" + course.courseId + ">");
+
+        //... more boilerplate formatting code omitted
+
+        contentStream.setFont(PDType1Font.HELVETICA, 14);
+        contentStream.newLineAtOffset(0, -25);
+        contentStream.showText("Teacher(s): " + course.teachers);
+
+        contentStream.newLineAtOffset(0, -25);
+        contentStream.showText("Total Spots: " + course.spotMap.maxSpots);
+
+        contentStream.newLineAtOffset(0, -25);
+
+        String spotsFilled = String.format("Spots Filled: %d — %.1f%%", course.getStudents().size(), percentFull * 100.0);
+
+        contentStream.showText(spotsFilled);
+
+        contentStream.newLineAtOffset(30, -50);
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+
+        contentStream.showText("Minimum Bids to Guarantee Placement");
+        contentStream.setFont(PDType1Font.HELVETICA, 14);
+
+        contentStream.newLineAtOffset(40, -30);
+        contentStream.setFont(PDType1Font.COURIER_BOLD, 14);
+
+        for (Grade grade : Grade.values()) {
+            for (Gender gender : Gender.values()) {
+                int points = getDemographicExpenditureMap().get(grade).get(gender);
+
+                contentStream.showText(String.valueOf(grade.gradeNum));
+                contentStream.newLineAtOffset(20, 0);
+
+                contentStream.showText(gender.name + ":");
+
+                contentStream.newLineAtOffset(15, 0);
+                contentStream.showText(String.valueOf(points));
+
+                contentStream.newLineAtOffset(40, 0);
+            }
+            contentStream.newLineAtOffset(-150, -25);
+        }
+
+        contentStream.setFont(PDType1Font.COURIER_BOLD, 16);
+
+        contentStream.newLineAtOffset(-40, -30);
+
+        contentStream.showText(String.format("ACDI: %.3f", acdi));
+
+        contentStream.newLineAtOffset(0, -30);
+        contentStream.showText(String.format("Avg Bid: %.2f", avgBid));
+
+        contentStream.newLineAtOffset(0, -30);
+        contentStream.showText(String.format("Avg Expenditure: %.2f", avgPointExpenditure));
+
+        contentStream.endText();
+
+        //create pie charts
+        PDImageXObject genderChart = JPEGFactory.createFromImage(doc, makeGenderPieChart());
+        PDImageXObject gradeChart = JPEGFactory.createFromImage(doc, makeGradePieChart());
+
+        //draw pie charts
+        contentStream.drawImage(genderChart, 320, 550);
+        contentStream.drawImage(gradeChart, 320, 325);
+
+        contentStream.close();
+        return page;
+    }
+
 }

@@ -2,9 +2,11 @@ package net.aspenk12.exed.ui;
 
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import net.aspenk12.exed.alg.data.CourseData;
 import net.aspenk12.exed.alg.members.Algorithm;
 import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.Student;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -34,10 +36,17 @@ public class SavePane extends MainPane {
 
         Workbook workbook = new XSSFWorkbook();
 
-        Iterator<Course> courseIterator = Course.getCourses().values().iterator();
-        while (courseIterator.hasNext()){
-            Course c = courseIterator.next();
+        PDDocument doc = new PDDocument();
+        for (Course c : Course.getCourses().values()) {
             c.writeSheet(workbook);
+
+            CourseData courseData = new CourseData(c);
+            courseData.calculateAll();
+            try {
+                doc.addPage(courseData.createPage(doc));
+            } catch (IOException e) {
+                ErrorAlert.throwErrorWindow(e);
+            }
         }
 
         try {
@@ -46,6 +55,12 @@ public class SavePane extends MainPane {
 
             statusText.setText("Status: Unreviewed course rosters saved to: " + f.getAbsolutePath());
             statusText.setFill(Color.GREEN);
+
+            String pdfLoc = f.getParent() + "/data.pdf";
+
+            doc.save(pdfLoc);
+
+            System.out.println(pdfLoc);
         } catch (IOException e) {
             ErrorAlert.throwErrorWindow(e);
             statusText.setText("Status: Failed to write file");
