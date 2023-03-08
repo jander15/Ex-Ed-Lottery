@@ -19,6 +19,7 @@ import java.util.*;
 /**
  * Pane that saves the course rosters after the lottery is finished.
  */
+
 public class SavePane extends MainPane {
 
     public SavePane() {
@@ -34,33 +35,42 @@ public class SavePane extends MainPane {
 
         File f = fileChooser.showSaveDialog(MainWindow.getStage());
 
+        //System.out.println(f);
+
         Workbook workbook = new XSSFWorkbook();
 
-        PDDocument doc = new PDDocument();
+        //PDDocument doc = new PDDocument();
         for (Course c : Course.getCourses().values()) {
             c.writeSheet(workbook);
-
-            CourseData courseData = new CourseData(c);
-            courseData.calculateAll();
-            try {
-                doc.addPage(courseData.createPage(doc));
-            } catch (IOException e) {
-                ErrorAlert.throwErrorWindow(e);
-            }
         }
 
+            //CourseData courseData = new CourseData(c);
+            //courseData.calculateAll();
+            //try {
+                //doc.addPage(courseData.createPage(doc));
+
+            //} catch (IOException e) {
+
+               // ErrorAlert.throwErrorWindow(e);
+
+
+
+
         try {
+
             FileOutputStream fos = new FileOutputStream(f);
             workbook.write(fos);
 
             statusText.setText("Status: Unreviewed course rosters saved to: " + f.getAbsolutePath());
             statusText.setFill(Color.GREEN);
 
+
+
             String pdfLoc = f.getParent() + "/data.pdf";
-
-            doc.save(pdfLoc);
-
             System.out.println(pdfLoc);
+            //doc.save(pdfLoc);
+
+            //System.out.println(pdfLoc);
         } catch (IOException e) {
             ErrorAlert.throwErrorWindow(e);
             statusText.setText("Status: Failed to write file");

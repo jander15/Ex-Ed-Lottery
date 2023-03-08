@@ -7,7 +7,7 @@ import net.aspenk12.exed.alg.members.Course;
  */
 public class Pick {
     public final Course course;
-    public final int index; //the position of this bid in it's student's application
+    public int index; //the position of this bid in it's student's application
     public int bid; //points can be modified in validation
 
     public Pick(Course course, int bid, int index) {

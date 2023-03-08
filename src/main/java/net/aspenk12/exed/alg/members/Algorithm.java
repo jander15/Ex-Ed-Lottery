@@ -17,25 +17,30 @@ public class Algorithm {
     }
 
     public void run(){
+
         for (Student student : students) {
             applyToNext(student);
         }
     }
 
     /**
-     * Attempts to fit a student on to it's next choice of course.
+     * Attempts to fit a student on to their next choice of course.
      * This method acts recursively. If the student fails to get on a course,
      * or if the student outbids another student, this method calls applyToNext on one of those students accordingly
      */
     /*protected 4 test*/ void applyToNext(Student student){
         Course course = student.currentPick.course;
+        System.out.println(course.courseName);
         Student nextStudent = course.placeStudent(student);
 
         //if the next student is null, no students were outbid and our job is done here.
         if(nextStudent == null){
             return;
         }
-
+        if(student.advancePick()) {
+            unlucky.add(student);
+            return;
+        }
         //only advance to the next pick if the student fails to get on this one.
         //if placeStudent() returns another student, they apply to the course again.
         if (nextStudent.equals(student)) {

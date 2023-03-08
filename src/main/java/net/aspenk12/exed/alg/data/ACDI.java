@@ -22,13 +22,20 @@ public class ACDI {
      * https://docs.google.com/spreadsheets/d/1RWVjrQlFMbxiu4orwcunpkta7loNvO6UbedTHAlONU8/edit?usp=sharing
      */
     public static int weigh(int i){
-        return switch (i) {
-            case 0 -> 6;
-            case 1 -> 4;
-            case 2 -> 3;
-            case 3 -> 2;
-            case 4, 5, 6, 7, 8, 9, 10, 11 -> 1;
-            default -> throw new Error("Tried to get an ACDI weight out of the proper range");
-        };
+        switch (i) {
+            case 0: return 6;
+            case 1: return 4;
+            case 2: return 3;
+            case 3: return 2;
+            case 4: return 1;
+            case 5: return 1;
+            case 6: return 1;
+            case 7: return 1;
+            case 8: return 1;
+            case 9: return 1;
+            case 10: return 1;
+            case 11: return 1;
+            default: throw new Error("Tried to get an ACDI weight out of the proper range");
+        }
     }
 }

@@ -60,7 +60,7 @@ public class CourseData {
     public void calculateAll(){
         calcAvgBid();
         calcAvgExpenditure();
-        calcDemographicExpenditure();
+        //calcDemographicExpenditure();
         calcAcdi();
         calcGenderDist();
         applicantGradeMap = calcGradeDist(course.getApplicants());

@@ -4,6 +4,7 @@ import net.aspenk12.exed.alg.members.Course;
 import net.aspenk12.exed.alg.members.Profile;
 import net.aspenk12.exed.util.Warnings;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +88,7 @@ public class Application {
     public void validate(){
         //create a copy of picks that we can modify as we iterate through
         List<Pick> copy = new ArrayList<>();
+        int removedPicks=0;
 
         for (Pick pick : picks) {
             if (pick.bid > profile.getPoints()){
@@ -111,8 +113,10 @@ public class Application {
             //is there a way to continue inside of the nested loop?
             if(alreadyAttended){
                 //by calling continue, we aren't adding this course to the copy.
+                removedPicks++;
                 continue;
             }
+            pick.index-=removedPicks;
 
             //only add this course to copy if there aren't any other picks on the same course
             //at this point, copy is full of all other validated picks
@@ -120,6 +124,7 @@ public class Application {
             for (Pick copyPick : copy) {
                 if(copyPick.course.equals(pick.course)){
                     alreadyApplying = true;
+                    removedPicks++;
                     break;
                 }
             }
@@ -131,6 +136,7 @@ public class Application {
 
         if(copy.size() < MIN_PICKS){
             Warnings.logWarning("Student " + profile.getFullName() + " had fewer than the minimum amount of picks");
+            System.out.println("Student " + profile.getFullName() + " had too few picks");
         }
 
         if(copy.size() > MAX_PICKS){
@@ -139,5 +145,6 @@ public class Application {
 
         picks = copy;
         validated = true;
+
     }
 }

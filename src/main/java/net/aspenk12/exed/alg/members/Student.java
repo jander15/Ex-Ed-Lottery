@@ -109,6 +109,7 @@ public class Student {
      * @return true if there are no remaining picks to advance to
      */
     public boolean advancePick(){
+        //MAIN ISSUE
         if(currentPick.index == application.pickCount() - 1){
             //the current pick is the last pick
             return true;
@@ -116,6 +117,7 @@ public class Student {
 
         System.out.println(application.email);
         currentPick = application.getPick(currentPick.index + 1);
+        System.out.println(application.getPicks().size());
         return false;
     }
 

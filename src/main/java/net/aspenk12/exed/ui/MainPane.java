@@ -57,7 +57,7 @@ public abstract class MainPane extends StackPane {
 
         mainText = new MainText(title);
 
-        setPrefSize(300,300);
+        setPrefSize(200,300);
         setAlignment(Pos.CENTER);
 
         mainButton = new Button(buttonText);

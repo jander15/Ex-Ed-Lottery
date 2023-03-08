@@ -14,7 +14,7 @@ public class ApplicationTest {
     @Test
     public void testValidation() {
         CourseTest.makeExampleCourses();
-
+        
         List<Course> previousCourses = new ArrayList<>();
         previousCourses.add(Course.get("SS"));
         previousCourses.add(Course.get("JH"));
