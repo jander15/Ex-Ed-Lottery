@@ -28,6 +28,7 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
     }
 
     public int get(Grade grade, Gender gender) {
+        System.out.println(gender);
         return get(grade).get(gender);
     }
 

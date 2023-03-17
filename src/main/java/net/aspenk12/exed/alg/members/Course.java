@@ -57,7 +57,7 @@ public class Course {
 
             Integer[] spots = getSpotsFromRow(row);
 
-            //this is honestly the most practical way to fill the map, shut
+            //this is honestly the most practical way to fill the map, shut!
             spotMap.put(Grade.SENIOR, Gender.MALE, spots[0]);
             spotMap.put(Grade.SENIOR, Gender.FEMALE, spots[1]);
             spotMap.put(Grade.JUNIOR, Gender.MALE, spots[2]);
@@ -66,7 +66,11 @@ public class Course {
             spotMap.put(Grade.SOPHOMORE, Gender.FEMALE, spots[5]);
             spotMap.put(Grade.FRESHMAN, Gender.MALE, spots[6]);
             spotMap.put(Grade.FRESHMAN, Gender.FEMALE, spots[7]);
-
+            spotMap.put(Grade.SENIOR,Gender.X,spots[9]);
+            spotMap.put(Grade.JUNIOR,Gender.X,spots[10]);
+            spotMap.put(Grade.SOPHOMORE,Gender.X,spots[11]);
+            spotMap.put(Grade.FRESHMAN,Gender.X,spots[12]);
+            System.out.println(courseName + spotMap);
             new Course(courseName, courseId, teachers, spotMap);
         }
     }
@@ -78,7 +82,7 @@ public class Course {
     //todo make this return primitive data? maybe even find a better way to do this? idk
     /*protected for testing*/ static Integer[] getSpotsFromRow(String[] row){
         ArrayList<Integer> spotCounts = new ArrayList<>();
-        String[] spots = Arrays.copyOfRange(row, 3, 11);
+        String[] spots = Arrays.copyOfRange(row, 3, 16);
         for (String spot : spots) {
             int spotCount = Integer.parseInt(spot);
             spotCounts.add(spotCount);
@@ -88,7 +92,7 @@ public class Course {
         spotCounts.toArray(retVal);
         return retVal;
     }
-
+    /**
 
     /**
      * Attempts to place a student on this trip.
@@ -101,6 +105,7 @@ public class Course {
         //students are demographically limited when there is space for them in the total course count,
         //but they are limited by demographic spots.
         boolean demLimited = (spotMap.get(profile.getGrade(), profile.getGender()) <= 0);
+
 
         if(spotMap.getRemainingSpots() > 0 && !demLimited){
             addStudent(student);

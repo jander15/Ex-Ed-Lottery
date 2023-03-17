@@ -41,6 +41,7 @@ public class Student {
             String[] row = csv.get(i);
 
             String email = row[0];
+            System.out.println(email);
             Profile profile = linkProfile(email);
 
             Application application = new Application(profile, email);

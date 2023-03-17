@@ -55,15 +55,18 @@ public class Profile {
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
 
-            String email, firstName, lastName, genderString, gradeString, pointString, lottoString;
+            String email, firstName, lastName, genderString, gradeString, pointString, lottoString, placedCourse, payment;
             try{
                 email = row[0];
+                System.out.println(email);
                 firstName = row[1];
                 lastName = row[2];
                 genderString = row[3];
                 gradeString = row[4];
                 pointString = row[5];
-                lottoString = row[6];
+                placedCourse = row[6];
+                payment = row[7];
+                lottoString = row[8];
             } catch (ArrayIndexOutOfBoundsException e){
                 //todo maybe convert this to a BadDataException?
                 ErrorAlert.throwErrorWindow("Validated Student Data is missing.",
@@ -98,7 +101,7 @@ public class Profile {
             List<Course> previousCourses = new ArrayList<>();
 
             //loop through previous course cells
-            for (int j = 7; j < 10; j++) {
+            for (int j = 9; j < 12; j++) {
 
                 String courseID;
 
