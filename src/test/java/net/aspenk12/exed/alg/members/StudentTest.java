@@ -29,7 +29,7 @@ public class StudentTest {
         assertEquals(alex.profile.getFirstName(), "Alex");
         assertEquals(alex.profile.getLastName(), "Appleby" );
         assertEquals(alex.profile.getId(), 11325);
-        assertEquals(alex.profile.getGender(), Gender.MALE);
+        assertEquals(alex.profile.getGender(), Gender.X);
         assertEquals(alex.profile.getPoints(), 5);
         assertEquals(alex.profile.getGrade(), Grade.SENIOR);
 

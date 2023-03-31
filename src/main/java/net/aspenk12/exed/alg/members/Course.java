@@ -151,7 +151,7 @@ public class Course {
         spotMap.takeSpot(s);
     }
 
-    public Sheet writeSheet(Workbook workbook){
+    /*public Sheet writeSheet(Workbook workbook){
         Sheet sheet = workbook.createSheet(courseId);
 
         Row staticDataRow = sheet.createRow(0);
@@ -187,7 +187,7 @@ public class Course {
         }
 
         return sheet;
-    }
+    }*/
 
     /**
      * Gets an instance of course using the course ID.

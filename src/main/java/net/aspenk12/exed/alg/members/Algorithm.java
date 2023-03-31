@@ -37,10 +37,8 @@ public class Algorithm {
         if(nextStudent == null){
             return;
         }
-        if(student.advancePick()) {
-            unlucky.add(student);
-            return;
-        }
+
+
         //only advance to the next pick if the student fails to get on this one.
         //if placeStudent() returns another student, they apply to the course again.
         if (nextStudent.equals(student)) {

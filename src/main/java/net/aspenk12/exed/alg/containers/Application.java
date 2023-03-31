@@ -116,7 +116,7 @@ public class Application {
                 removedPicks++;
                 continue;
             }
-            pick.index-=removedPicks;
+
 
             //only add this course to copy if there aren't any other picks on the same course
             //at this point, copy is full of all other validated picks
@@ -128,7 +128,7 @@ public class Application {
                     break;
                 }
             }
-
+            pick.index-=removedPicks;
             if(!alreadyApplying){
                 copy.add(pick);
             }

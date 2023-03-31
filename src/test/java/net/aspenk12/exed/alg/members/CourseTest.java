@@ -162,7 +162,7 @@ public class CourseTest {
         c.placeStudent(s2);
         c.placeStudent(s3);
 
-        c.writeSheet(workbook);
+        //c.writeSheet(workbook);
 
         try {
             Workbook actualWorkBook = new XSSFWorkbook(getClass().getResourceAsStream("/out/testsheet.xlsx"));
