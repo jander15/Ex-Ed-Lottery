@@ -10,6 +10,7 @@ public class Algorithm {
     private Map<String, Course> courses;
     private List<Student> students;
     private List<Student> unlucky = new ArrayList<>();
+    private List<Student> secondLotto = new ArrayList<>();
 
     public Algorithm(Map<String, Course> courses, List<Student> students) {
         this.courses = courses;
@@ -19,9 +20,26 @@ public class Algorithm {
     public void run(){
 
         for (Student student : students) {
+            //only attempt to place students who weren't already placed
+            if (student.profile.placedCourse.isEmpty()) {
+                applyToNext(student);
+            }
+        }
+    }
+
+    public void run2(){
+        //reset spot map for all courses
+        for (Course c : Course.getCourses().values()){
+            c.removeRestrictionsFromSpotMap();
+        }
+        //reset "current pick" to 0 for all students
+        //run unlucky students back through placement algorithm
+        for (Student student : unlucky) {
+            student.currentPick = student.application.getPick(0);
             applyToNext(student);
         }
     }
+
 
     /**
      * Attempts to fit a student on to their next choice of course.
@@ -29,8 +47,9 @@ public class Algorithm {
      * or if the student outbids another student, this method calls applyToNext on one of those students accordingly
      */
     /*protected 4 test*/ void applyToNext(Student student){
+
         Course course = student.currentPick.course;
-        System.out.println(course.courseName);
+        //System.out.println(course.courseName);
         Student nextStudent = course.placeStudent(student);
 
         //if the next student is null, no students were outbid and our job is done here.
@@ -44,8 +63,15 @@ public class Algorithm {
         if (nextStudent.equals(student)) {
             //if a student has no more trips to try, add them to unlucky and finish
             if(student.advancePick()) {
-                unlucky.add(student);
-                return;
+                if(!student.unlucky){
+                    unlucky.add(student);
+                    student.unlucky=true;
+                    return;
+                }
+                else{
+                    secondLotto.add(student);
+                    return;
+                }
             }
         }
 
@@ -55,5 +81,8 @@ public class Algorithm {
 
     public List<Student> getUnlucky(){
         return unlucky;
+    }
+    public List<Student> getSecondLotto(){
+        return secondLotto;
     }
 }

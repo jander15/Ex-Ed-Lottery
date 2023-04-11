@@ -28,7 +28,6 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
     }
 
     public int get(Grade grade, Gender gender) {
-        System.out.println(gender);
         return get(grade).get(gender);
     }
 
@@ -48,6 +47,12 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
         int prev = get(student.profile.getGrade(), student.profile.getGender());
 
         put(student.profile.getGrade(), student.profile.getGender(), prev - 1);
+
+        if (!student.profile.getGender().equals(Gender.X)){
+            prev=get(student.profile.getGrade(), Gender.X);
+            put(student.profile.getGrade(), Gender.X, prev - 1);
+        }
+
     }
 
     public void addSpot(Student student){
@@ -58,5 +63,10 @@ public class SpotMap extends HashMap<Grade, HashMap<Gender, Integer>> {
         int prev = get(student.profile.getGrade(), student.profile.getGender());
 
         put(student.profile.getGrade(), student.profile.getGender(), prev + 1);
+
+        if (!student.profile.getGender().equals(Gender.X)){
+            prev=get(student.profile.getGrade(), Gender.X);
+            put(student.profile.getGrade(), Gender.X, prev + 1);
+        }
     }
 }

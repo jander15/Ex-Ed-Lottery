@@ -50,29 +50,49 @@ public class Course {
             String courseName = row[1];
             String teachers = row[2];
 
-            String maxSpotString = row[11];
-            int maxSpots = Util.parseIntCSV(maxSpotString, csv, i, 11);
+            String maxSpotString = row[3];
+            int maxSpots = Util.parseIntCSV(maxSpotString, csv, i, 3);
 
             SpotMap spotMap = new SpotMap(maxSpots);
 
             Integer[] spots = getSpotsFromRow(row);
 
             //this is honestly the most practical way to fill the map, shut!
-            spotMap.put(Grade.SENIOR, Gender.MALE, spots[0]);
-            spotMap.put(Grade.SENIOR, Gender.FEMALE, spots[1]);
-            spotMap.put(Grade.JUNIOR, Gender.MALE, spots[2]);
-            spotMap.put(Grade.JUNIOR, Gender.FEMALE, spots[3]);
-            spotMap.put(Grade.SOPHOMORE, Gender.MALE, spots[4]);
-            spotMap.put(Grade.SOPHOMORE, Gender.FEMALE, spots[5]);
-            spotMap.put(Grade.FRESHMAN, Gender.MALE, spots[6]);
-            spotMap.put(Grade.FRESHMAN, Gender.FEMALE, spots[7]);
-            spotMap.put(Grade.SENIOR,Gender.X,spots[9]);
-            spotMap.put(Grade.JUNIOR,Gender.X,spots[10]);
-            spotMap.put(Grade.SOPHOMORE,Gender.X,spots[11]);
-            spotMap.put(Grade.FRESHMAN,Gender.X,spots[12]);
-            System.out.println(courseName + spotMap);
+            spotMap.put(Grade.SENIOR, Gender.X, spots[0]);
+            spotMap.put(Grade.JUNIOR, Gender.X, spots[1]);
+            spotMap.put(Grade.SOPHOMORE, Gender.X, spots[2]);
+            spotMap.put(Grade.FRESHMAN, Gender.X, spots[3]);
+
+            spotMap.put(Grade.SENIOR, Gender.MALE, spots[4]);
+            spotMap.put(Grade.SENIOR, Gender.FEMALE, spots[5]);
+            spotMap.put(Grade.JUNIOR, Gender.MALE, spots[6]);
+            spotMap.put(Grade.JUNIOR, Gender.FEMALE, spots[7]);
+            spotMap.put(Grade.SOPHOMORE,Gender.MALE,spots[8]);
+            spotMap.put(Grade.SOPHOMORE,Gender.FEMALE,spots[9]);
+            spotMap.put(Grade.FRESHMAN,Gender.MALE,spots[10]);
+            spotMap.put(Grade.FRESHMAN,Gender.FEMALE,spots[11]);
+
+            //System.out.println(courseName + spotMap);
+
             new Course(courseName, courseId, teachers, spotMap);
         }
+    }
+
+    public void removeRestrictionsFromSpotMap(){
+        int spotsLeft = spotMap.getRemainingSpots();
+        spotMap.put(Grade.SENIOR, Gender.X, spotsLeft);
+        spotMap.put(Grade.JUNIOR, Gender.X, spotsLeft);
+        spotMap.put(Grade.SOPHOMORE, Gender.X, spotsLeft);
+        spotMap.put(Grade.FRESHMAN, Gender.X, spotsLeft);
+
+        spotMap.put(Grade.SENIOR, Gender.MALE, spotsLeft);
+        spotMap.put(Grade.SENIOR, Gender.FEMALE, spotsLeft);
+        spotMap.put(Grade.JUNIOR, Gender.MALE, spotsLeft);
+        spotMap.put(Grade.JUNIOR, Gender.FEMALE, spotsLeft);
+        spotMap.put(Grade.SOPHOMORE,Gender.MALE,spotsLeft);
+        spotMap.put(Grade.SOPHOMORE,Gender.FEMALE,spotsLeft);
+        spotMap.put(Grade.FRESHMAN,Gender.MALE,spotsLeft);
+        spotMap.put(Grade.FRESHMAN,Gender.FEMALE,spotsLeft);
     }
 
     /**
@@ -82,7 +102,7 @@ public class Course {
     //todo make this return primitive data? maybe even find a better way to do this? idk
     /*protected for testing*/ static Integer[] getSpotsFromRow(String[] row){
         ArrayList<Integer> spotCounts = new ArrayList<>();
-        String[] spots = Arrays.copyOfRange(row, 3, 16);
+        String[] spots = Arrays.copyOfRange(row, 4, 16);
         for (String spot : spots) {
             int spotCount = Integer.parseInt(spot);
             spotCounts.add(spotCount);
@@ -102,35 +122,54 @@ public class Course {
     public Student placeStudent(Student student){
         Profile profile = student.profile;
 
-        //students are demographically limited when there is space for them in the total course count,
-        //but they are limited by demographic spots.
-        boolean demLimited = (spotMap.get(profile.getGrade(), profile.getGender()) <= 0);
+        //check total spots
+        if(spotMap.getRemainingSpots() > 0) {
 
+            //check grade level spots - this goes into the spotMap as Gender X
+            if (spotMap.get(profile.grade, Gender.X) > 0) {
 
-        if(spotMap.getRemainingSpots() > 0 && !demLimited){
-            addStudent(student);
-            return null;
-        }
-
-        for (int i = 0; i < students.size(); i++) {
-            Student otherStudent = students.get(i);
-
-            //if this student is demographically limited, they can only replace students of the same dem.
-            //otherwise, they can replace anyone
-            if (!demLimited || otherStudent.sameDemographic(student)){
-                int bid = student.currentPick.bid;
-                int otherBid = otherStudent.currentPick.bid;
-
-                boolean largerBid = (bid > otherBid);
-                boolean equalBid = (bid == otherBid);
-                boolean largerLotto = (profile.getLottoNumber() > otherStudent.profile.getLottoNumber());
-
-                if(largerBid || (equalBid && largerLotto)){
-                    replaceStudent(student, otherStudent, i);
-                    return otherStudent;
+                if (profile.gender.equals(Gender.X)) {
+                    addStudent(student);
+                    return null;
+                }
+                //check gender-grade level spots if student gender is M or F
+                else if (spotMap.get(profile.getGrade(), profile.getGender()) > 0) {
+                    addStudent(student);
+                    return null;
                 }
             }
         }
+        // a student can still get on the course by replacing another student if they meet certain conditions
+                for (int i = 0; i < students.size(); i++) {
+                    Student otherStudent = students.get(i);
+
+                    //Only replace student's if they have not been placed on the course.
+                    if (otherStudent.profile.placedCourse.isEmpty()) {
+                        //if this student is demographically limited, they can only replace students of the same dem.
+                        //otherwise, they can replace anyone
+
+                        int gradeLevelSpots = spotMap.get(student.profile.grade, Gender.X);
+                        int demographicSpots = spotMap.get(student.profile.grade, student.profile.gender);
+                        boolean notLimited = gradeLevelSpots > 0 && demographicSpots > 0;
+                        boolean sameGradeLevel = student.profile.grade.equals(otherStudent.profile.grade);
+                        boolean canCompeteWithinGradeLevel = sameGradeLevel && demographicSpots > 0;
+                        boolean canCompete = (otherStudent.unlucky==student.unlucky);
+
+                        if (canCompete && (notLimited || canCompeteWithinGradeLevel || otherStudent.sameDemographic(student))) {
+                            int bid = student.currentPick.bid;
+                            int otherBid = otherStudent.currentPick.bid;
+
+                            boolean largerBid = (bid > otherBid);
+                            boolean equalBid = (bid == otherBid);
+                            boolean betterTieBreaker = (profile.getLottoNumber() < otherStudent.profile.getLottoNumber());
+
+                            if (largerBid || (equalBid && betterTieBreaker)) {
+                                replaceStudent(student, otherStudent, i);
+                                return otherStudent;
+                            }
+                        }
+                    }
+                }
 
         //if we got through the loop, the student didn't make it onto the trip.
         return student;
@@ -146,48 +185,18 @@ public class Course {
 
     }
 
-    private void addStudent(Student s) {
+    public void addStudent(Student s) {
         students.add(s);
         spotMap.takeSpot(s);
     }
 
-    /*public Sheet writeSheet(Workbook workbook){
-        Sheet sheet = workbook.createSheet(courseId);
-
-        Row staticDataRow = sheet.createRow(0);
-        staticDataRow.createCell(0).setCellValue(courseId);
-        staticDataRow.createCell(1).setCellValue(courseName);
-        staticDataRow.createCell(2).setCellValue(teachers);
-
-        //leave row 1 empty for aesthetics and stuff
-        Row labelRow = sheet.createRow(2);
-        labelRow.createCell(0).setCellValue("Student ID");
-        labelRow.createCell(1).setCellValue("Email");
-        labelRow.createCell(2).setCellValue("First Name");
-        labelRow.createCell(3).setCellValue("Last Name");
-        labelRow.createCell(4).setCellValue("Gender");
-        labelRow.createCell(5).setCellValue("Grade");
-        labelRow.createCell(6).setCellValue("Bid");
-
-
-        for (int i = 0; i < students.size(); i++) {
-            Student student = students.get(i);
-
-            //note we start on the fourth row here
-            Row row = sheet.createRow(i + 3);
-            row.createCell(0).setCellValue(student.profile.getId());
-            row.createCell(1).setCellValue(student.application.email);
-            row.createCell(2).setCellValue(student.profile.getFirstName());
-            row.createCell(3).setCellValue(student.profile.getLastName());
-            row.createCell(4).setCellValue(student.profile.getGender().name);
-            row.createCell(5).setCellValue(student.profile.getGrade().gradeNum);
-
-            Pick p = student.application.getPick(this);
-            row.createCell(6).setCellValue(p.bid);
-        }
-
-        return sheet;
-    }*/
+    /**
+     * Only to be used to add students to "unlucky" and "NoSignUp" Courses
+     * @param s
+     */
+    public void forceAddStudent(Student s){
+        students.add(s);
+    }
 
     /**
      * Gets an instance of course using the course ID.

@@ -12,11 +12,13 @@ import java.util.*;
  */
 public class Profile {
     protected int id;
+    protected String email;
     protected String firstName;
     protected String lastName;
     protected Gender gender;
     protected Grade grade;
     protected int points;
+    protected String placedCourse;
     protected int lottoNumber;
 
     private final List<Course> previousCourses;
@@ -29,13 +31,15 @@ public class Profile {
     /**
      * This constructor is public for testing, but in practice it should only be called from inside the class.
      */
-    public Profile(int id, String firstName, String lastName, Gender gender, Grade grade, int points, int lottoNumber, List<Course> previousCourses) {
+    public Profile(int id,String email, String firstName, String lastName, Gender gender, Grade grade, int points,String placedCourse, int lottoNumber, List<Course> previousCourses) {
         this.id = id;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.grade = grade;
         this.points = points;
+        this.placedCourse = placedCourse;
         this.lottoNumber = lottoNumber;
         this.previousCourses = previousCourses;
 
@@ -45,6 +49,15 @@ public class Profile {
         } else {
             usedLottoNumbers.add(lottoNumber);
         }
+        if(placedCourse.strip().length()>0){
+            Course c=Course.get(placedCourse.strip());
+            Student s = new Student(this,null);
+            c.addStudent(s);
+        }
+
+    }
+    public static Map<Integer, Profile> getProfiles(){
+        return profiles;
     }
 
     public static void createProfiles(CSV csv) {
@@ -121,7 +134,7 @@ public class Profile {
                 }
             }
 
-            Profile profile = new Profile(id, firstName, lastName, gender, grade, points, lottoNumber, previousCourses);
+            Profile profile = new Profile(id,email, firstName, lastName, gender, grade, points, placedCourse, lottoNumber, previousCourses);
             profiles.put(id, profile);
         }
     }
@@ -145,6 +158,9 @@ public class Profile {
     public int getId() {
         return id;
     }
+    public String getEmail() {
+        return email;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -164,6 +180,9 @@ public class Profile {
 
     public int getPoints() {
         return points;
+    }
+    public String getPlacedCourse() {
+        return placedCourse;
     }
 
     public int getLottoNumber() {

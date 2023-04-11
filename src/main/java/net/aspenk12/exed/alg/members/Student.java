@@ -22,6 +22,7 @@ import java.util.List;
 public class Student {
     public final Profile profile;
     public final Application application;
+    public boolean unlucky = false;
 
     //tracks which picks the student has 'tried to get on' in the algorithm
     /*Algorithm*/ Pick currentPick;
@@ -35,7 +36,7 @@ public class Student {
      */
     public static void createStudents(CSV csv) throws ProfileLinkException{
         //only create students once, duh.
-        if(!students.isEmpty()) return;
+        if(students.size()>100) return;
 
         for (int i = 0; i < csv.rows(); i++) {
             String[] row = csv.get(i);
@@ -73,9 +74,13 @@ public class Student {
             }
 
             application.validate();
+            //only create students who haven't already been placed
+            if (profile.placedCourse.isEmpty()){
+                new Student(profile, application);
+            }
 
-            new Student(profile, application);
         }
+
     }
 
     static Profile linkProfile(String email) throws ProfileLinkException{
@@ -99,10 +104,17 @@ public class Student {
     }
 
     public boolean isDemographic(Grade grade, Gender gender){
+
         boolean sameGender = gender.equals(profile.getGender());
         boolean sameGrade = grade.equals(profile.getGrade());
-
-        return sameGender && sameGrade;
+        //if gender is X then only look at Grade level
+        if (gender.equals(Gender.X)){
+            return sameGrade;
+        }
+        //otherwise look at both Gender and Grade Level
+        else {
+            return sameGender && sameGrade;
+        }
     }
 
     /**
@@ -121,11 +133,15 @@ public class Student {
         System.out.println(application.getPicks().size());
         return false;
     }
+    public int getBid(){
+        return this.application.getPick(0).bid;
+    }
 
 
     //protected for testing - ideally students should only be created internally in createStudents()
     //use MockStudent
-    protected Student(Profile profile, Application application) {
+    //made public to create course with students who didn't sign up - probably a better way to do this!
+    public Student(Profile profile, Application application) {
         this.profile = profile;
         this.application = application;
 
