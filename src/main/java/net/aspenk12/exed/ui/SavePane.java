@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -40,11 +41,11 @@ public class SavePane extends MainPane {
 
         //System.out.println(f);
 
-        Workbook workbook = new XSSFWorkbook();
+        XSSFWorkbook workbook = new XSSFWorkbook();
 
         //PDDocument doc = new PDDocument();
 
-        Sheet sheet = workbook.createSheet("All Courses");
+        XSSFSheet sheet = workbook.createSheet("All Courses");
 
         Row labelRow = sheet.createRow(0);
         labelRow.createCell(0).setCellValue("Code");

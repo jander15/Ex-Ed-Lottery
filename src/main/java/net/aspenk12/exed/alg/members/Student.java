@@ -69,6 +69,9 @@ public class Student {
                 //these data points should be validated automatically by google forms
                 //probably no need to catch the NumberFormatException
                 int bid = Integer.parseInt(bidString);
+                if (profile.grade==Grade.SENIOR){
+                    bid=profile.points;
+                }
 
                 application.addNewPick(course, bid);
             }
